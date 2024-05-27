@@ -1,0 +1,98 @@
+package Negocio_Autopartes;
+
+import java.util.ArrayList;
+
+public class Negocio {
+	ArrayList<Autoparte> autopartes;
+	ArrayList<Cliente> clientes;
+	
+	public Negocio() {
+		autopartes = new ArrayList<Autoparte>();
+		clientes = new ArrayList<Cliente>();
+	}
+	
+	public Autoparte retornoAutoparte(int id) {
+		for(Autoparte autoparte: autopartes) {
+			if(autoparte.getId()==id) {
+				return autoparte;
+			}
+		}
+		return null;
+	}
+	
+	
+	public void CargarCliente(Cliente cliente) {
+		clientes.add(cliente);
+		System.out.println("Se agrego al cliente a la lista");
+	}
+	
+	
+	public void CargarAutoparte(Autoparte autoparte) {
+		boolean existe = this.VerificarAutoparte(autoparte.getId());
+		
+		if (!existe) {
+			autopartes.add(autoparte);
+			System.out.println("La autoparte fue agregada correctamente");
+			System.out.println();
+		} else {
+			System.out.println("La autoparte ya existe");
+		}
+	}
+	
+	public void EliminarAutoparte(int id) {
+		boolean existe = this.VerificarAutoparte(id);
+		
+		if (!existe) {
+			System.out.println("La autoparte no existe");			
+		} else {
+			for (Autoparte autoparte : autopartes) {
+				if (autoparte.getId() == id) {
+					autopartes.remove(autoparte);
+					System.out.println("La autoparte fue eliminada correctamente");
+					System.out.println();
+				}
+			}
+		}
+	}
+	
+	public void ListarAutopartes() {
+        if (autopartes.isEmpty()) {
+            System.out.println("No hay autopartes en la lista.");
+        } else {
+            for (Autoparte autoparte : autopartes) {
+                System.out.println("ID: " + autoparte.getId() + ", Precio: " + autoparte.getPrecio() + ", Modelo: " + autoparte.getModelo());
+            }
+        }
+    }
+	
+	public void AgregarStock(int id, int cantidad) {
+		Autoparte autoparte = this.retornoAutoparte(id);
+		autoparte.sumarStock(cantidad);
+	}
+	
+	public void QuitarStock(int id, int cantidad) {
+		Autoparte autoparte = this.retornoAutoparte(id);
+		autoparte.restarStock(cantidad);
+	}
+	
+	// Estan en amarillo porque todavia no los usamos
+	private boolean VerificarStock(int id, int stockActual) {
+		boolean tiene = true;
+		
+		/* Vamos a tener que hacer una comparacion entre el stock ACTUAL y el stock MINIMO */
+		
+		return tiene;
+	}
+	
+	private boolean VerificarAutoparte(int id) {
+		boolean existe = true;
+		
+		for (Autoparte autoparte : autopartes) {
+			if (autoparte.getId() == id) {
+				return existe;
+			}
+		}
+		
+		return !existe;
+	}
+}

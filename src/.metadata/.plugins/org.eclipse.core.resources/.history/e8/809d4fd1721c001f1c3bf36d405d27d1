@@ -1,0 +1,15 @@
+package Negocio_Autopartes;
+
+public class Cliente {
+	id + Nombre + Dirección + Teléfono + Localidad + Provincia + e-mail.
+	
+	int id;
+	String nombre;
+	String direccion;
+	Double telefono;
+	String localidad;
+	String provincia;
+	String mail;
+	
+
+}

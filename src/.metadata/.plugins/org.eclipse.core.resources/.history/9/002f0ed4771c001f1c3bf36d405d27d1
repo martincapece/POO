@@ -1,0 +1,71 @@
+package Negocio_Autopartes;
+
+public class Pedido {
+	private int id;
+	private String fecha;
+	private double montoTotal;
+	private int cantidad;
+	private int idautoparte;
+	
+	public Pedido(int id, String fecha, double montoTotal, int cantidad, int idautoparte) {
+		setId(id);
+		setFecha(fecha);
+		setMontoTotal(montoTotal);
+		setCantidad(cantidad);
+		setIdautoparte(idautoparte);
+	}
+
+
+	public int getIdautoparte() {
+		return idautoparte;
+	}
+
+	public void setIdautoparte(int idautoparte) {
+		this.idautoparte = idautoparte;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(String fecha) {
+		this.fecha = fecha;
+	}
+
+	public double getMontoTotal() {
+		return montoTotal;
+	}
+
+	public void setMontoTotal(double montoTotal) {
+		this.montoTotal = montoTotal;
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
+	}
+	
+	public boolean verificarStock(Autoparte autoparte) {
+		if(autoparte.getStock()>this.cantidad) {
+			autoparte.restarStock(cantidad);
+			return true;
+		}else {
+			System.out.println("El stock no es suficiente para cubrir el pedido.");
+			return false;
+		}
+		
+	}
+	
+	
+}
