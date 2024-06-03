@@ -114,4 +114,17 @@ public class Autoparte {
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
+	
+	public void sumarStock(int cantidad) {
+		this.stock += cantidad;
+		System.out.print("Se agrego correctamente, tu stock actual es de: " + this.stock + "\n");
+		
+	}
+	
+	public void restarStock(int cantidad) {
+		this.stock -= cantidad;
+		System.out.print("Se quito correctamente, tu stock actual es de: " + this.stock + "\n");
+		
+	}
+	
 }

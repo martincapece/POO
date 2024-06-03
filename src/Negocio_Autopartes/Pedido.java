@@ -1,17 +1,38 @@
 package Negocio_Autopartes;
 
+import java.util.ArrayList;
+
 public class Pedido {
 	private int id;
 	private String fecha;
 	private double montoTotal;
-	private int cantidad;
+	ArrayList<Autoparte> autopartepedido;
+	ArrayList<Integer> autopartecantidad;
 	
-	public Pedido(int id, String fecha, double montoTotal, int cantidad) {
+	public Pedido(int id, String fecha, double montoTotal) {
 		setId(id);
 		setFecha(fecha);
 		setMontoTotal(montoTotal);
-		setCantidad(cantidad);
+		autopartepedido = new ArrayList<Autoparte>();
+		autopartecantidad = new ArrayList<>();
 	}
+	
+	public void CargarAutopartePed(Autoparte autoparte) {
+		autopartepedido.add(autoparte);
+	}
+	
+	public void CargarCantidadPed(int cant) {
+		autopartecantidad.add(cant);
+	}
+
+	public void CancelarPedido() {
+		for(int i = 0; i < autopartepedido.size(); i++) {
+			if(autopartecantidad.get(i)<autopartepedido.get(i).getStock()) {
+				autopartepedido.get(i).sumarStock(autopartecantidad.get(i));
+			}
+		}
+	}
+	
 
 	public int getId() {
 		return id;
@@ -36,13 +57,29 @@ public class Pedido {
 	public void setMontoTotal(double montoTotal) {
 		this.montoTotal = montoTotal;
 	}
-
-	public int getCantidad() {
-		return cantidad;
+	
+	public void disminuirStock() {
+		for(int i = 0; i < autopartepedido.size(); i++) {
+			if(verificarStock(autopartepedido.get(i),autopartecantidad.get(i))) {
+				if(autopartecantidad.get(i)<autopartepedido.get(i).getStock()) {
+					autopartepedido.get(i).restarStock(autopartecantidad.get(i));
+				}
+			}else {
+				System.out.println("No habia suficiente stock");
+				return;
+			}
+		}
 	}
-
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
+	
+	public boolean verificarStock(Autoparte autoparte,int cant) {
+		if(autoparte.getStock()>cant) {
+			return true;
+		}else {
+			return false;
+		}
+		
+		
 	}
+	
 	
 }
