@@ -1,0 +1,68 @@
+package Negocio_Autopartes;
+
+import java.util.ArrayList;
+
+public class Pedido {
+	private int id;
+	private String fecha;
+	private double montoTotal;
+	//private int cantidad;
+	private ArrayList<Autoparte> autopartepedido = new ArrayList<Autoparte>();
+	private ArrayList<Integer> autopartecantidad = new ArrayList<>();
+	
+	public Pedido(int id, String fecha, double montoTotal) {
+		setId(id);
+		setFecha(fecha);
+		setMontoTotal(montoTotal);
+	}
+	
+	public void CargarAutopartePed(Autoparte autoparte) {
+		autopartepedido.add(autoparte);
+	}
+	
+	public void CargarCantidadPed(int cant) {
+		autopartecantidad.add(cant);
+	}
+
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(String fecha) {
+		this.fecha = fecha;
+	}
+
+	public double getMontoTotal() {
+		return montoTotal;
+	}
+
+	public void setMontoTotal(double montoTotal) {
+		this.montoTotal = montoTotal;
+	}
+
+
+	
+	public boolean verificarStock() {
+		for(int i = 0; i < autopartepedido.size(); i++) {
+			if(autopartecantidad.get(i)>autopartepedido.get(i).getStock()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public void reponerStock() {
+		
+	}
+	
+	
+}

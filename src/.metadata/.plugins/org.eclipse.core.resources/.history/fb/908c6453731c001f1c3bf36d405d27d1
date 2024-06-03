@@ -1,0 +1,142 @@
+package Ejecucion;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+import Negocio_Autopartes.*;
+
+public class Main {
+	private static Negocio negocio;
+	public static Scanner sc = new Scanner(System.in);
+	
+	public static void main(String[] args) {
+		negocio = new Negocio();
+		String opcion = "";
+		String funcionalidad = "";		
+		while(!funcionalidad.equals("f")) {
+			System.out.println("Introduzca q para gestionar autopartes, n para agregar clientes a la lista, w para gestionar pedidos, e para gestionar ventas");
+			if(funcionalidad.equals("q")) {
+			
+				do {
+					System.out.println("Ingrese una opción (a agregar autoparte, t eliminar autoparte, c listar autopartes, e modificar autopartes, s para salir):  ");
+					opcion = sc.next();
+			
+					if(opcion.equals("a")) {
+						agregarAutoparte();
+					}else if(opcion.equals("e")) {
+						modificarAutoparte();
+					}else if(opcion.equals("c")) {
+						listarAutoparte();
+					}else if(opcion.equals("t")){
+						bajaAutoparte();
+					}else if(opcion.equals("y")) {
+						modificarStock();
+					}
+				}while(!opcion.equals("s"));
+			}else if(funcionalidad.equals("n")) {
+				agregarCliente();
+				System.out.println("Ingrese id del cliente");
+				int id = sc.nextInt();
+				System.out.println("Ingrese nombre del cliente");
+				String nombre = sc.next();
+				System.out.println("Ingrese direccion del cliente");
+				String direccion = sc.next();
+				System.out.println("Ingrese telefono del cliente");
+				double telefono = sc.nextDouble();
+				System.out.println("Ingrese localidad del cliente");
+				String localidad = sc.next();
+				System.out.println("Ingrese id del cliente");
+				String provincia = sc.next();
+				System.out.println("Ingrese id del cliente");
+				String mail = sc.next();
+				ArrayList pedidos = new ArrayList<Pedido>();
+				Cliente cliente = new Cliente(id,nombre,telefono,localidad,provincia,mail,pedidos);
+				
+				
+				
+			
+			}else if(funcionalidad.equals("w")) {
+			
+			}else if(funcionalidad.equals("e")) {
+				
+			}
+	}
+		
+}		
+	
+	public static void agregarAutoparte() {
+		System.out.print("Ingresar id de la autoparte: ");
+		int id = sc.nextInt();
+		
+		System.out.print("Ingresar denominacion: ");
+		String denominacion = sc.next();
+		
+		System.out.print("Ingresar descripcion: ");
+		String descripcion = sc.next();
+		
+		System.out.print("Ingresar categoria: ");
+		String categoria = sc.next();
+		
+		System.out.print("Ingresar marca: ");
+		String marca = sc.next();
+		
+		System.out.print("Ingresar vehiculo: ");
+		String vehiculo = sc.next();
+		
+		System.out.print("Ingresar modelo: ");
+		String modelo = sc.next();
+		
+		System.out.print("Ingresar precio: ");
+		double precio = sc.nextDouble();
+		
+		System.out.print("Ingresar stock: ");
+		int stock = sc.nextInt();
+		
+		System.out.print("Ingresar stock minimo: ");
+		int stockMinimo = sc.nextInt();
+		
+		System.out.print("Ingresar enlace: ");
+		String enlace = sc.next();
+		
+		Autoparte autoparte = new Autoparte(id, denominacion, descripcion, categoria, marca, vehiculo, modelo, precio, stock, stockMinimo, enlace);
+		
+		negocio.CargarAutoparte(autoparte);
+	}
+	
+	public static void modificarAutoparte() {
+		
+	}
+	
+	public static void listarAutoparte() {
+		negocio.ListarAutopartes();
+	}
+
+	public static void bajaAutoparte() {
+		System.out.print("Ingresar el id de la autoparte a eliminar: ");
+		int id = sc.nextInt();	
+		negocio.EliminarAutoparte(id);
+	}
+	
+	public static void modificarStock() {
+		System.out.print("Ingrese 1 para cargar stock, 2 para eliminar: ");
+		int modificacion = sc.nextInt() ;
+		if(modificacion==1) {
+			System.out.print("Ingresar el id de la autoparte para cargar stock: ");
+			int id = sc.nextInt();	
+			System.out.print("Ingresar la cantidad a agregar:");
+			int cantidad = sc.nextInt();	
+			negocio.AgregarStock(id,cantidad);
+		}else if(modificacion==2) {
+			System.out.print("Ingresar el id de la autoparte para eliminar stock: ");
+			int id = sc.nextInt();	
+			System.out.print("Ingresar la cantidad a agregar:");
+			int cantidad = sc.nextInt();
+			negocio.QuitarStock(id,cantidad);
+			
+			
+		}
+		
+		
+	}
+	
+
+}
