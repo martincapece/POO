@@ -260,20 +260,33 @@ public class Main {
 	public static void agregarCliente() {
 		System.out.print("Ingrese id del cliente: ");
 		int id = sc.nextInt();
+		
 		System.out.print("Ingrese nombre del cliente: ");
 		String nombre = sc.next();
+		
 		System.out.print("Ingrese direccion del cliente: ");
 		String direccion = sc.next();
+		
 		System.out.print("Ingrese telefono del cliente: ");
-		double telefono = sc.nextDouble();
+		int telefono = sc.nextInt();
+		
 		System.out.print("Ingrese localidad del cliente: ");
 		String localidad = sc.next();
+		
 		System.out.print("Ingrese provincia del cliente: ");
 		String provincia = sc.next();
-		System.out.print("Ingrese mail del cliente: ");
-		String mail = sc.next();
 		
-		Cliente cliente = new Cliente(id,nombre,direccion,telefono,localidad,provincia,mail);
+		System.out.print("Ingrese email del cliente: ");
+		String email = sc.next();
+		boolean estado = validarEmail(email);
+		do {
+			System.out.println("El email no es valido.");
+			System.out.print("Introduzca un email valido: ");
+			email = sc.next();
+			estado = validarEmail(email);
+		} while (estado == false);
+		
+		Cliente cliente = new Cliente(id,nombre,direccion,telefono,localidad,provincia,email);
 		negocio.AgregarCliente(cliente);
 	}
 	
@@ -311,6 +324,38 @@ public class Main {
 		Cliente cliente = negocio.RetornoCliente(idcliente);
 		Pedido pedido = cliente.retornoPedido(idpedido);
 		pedido.CancelarPedido();
+	}
+	
+	public static boolean validarEmail(String email) {
+		boolean valido = true;
+		
+		String[] partes = email.split("@");
+
+		if (email == null || !email.contains("@") || !email.contains(".") || partes.length != 2) {
+			return !valido;
+		}
+		
+		String direccionCorreo = partes[0];
+		String servidor = partes[1];	
+		String[] partesServidor = servidor.split("\\.");
+		
+		if ((direccionCorreo.isEmpty() && servidor.isEmpty()) || (partesServidor.length < 1 || partesServidor.length > 3)|| contieneNumero(servidor)) {
+			return !valido;
+		}
+		
+		return valido;
+	}
+	
+	public static boolean contieneNumero(String cadena) {
+		boolean contiene = true;
+		
+		for (char c : cadena.toCharArray()) {
+			if (Character.isDigit(c)) {
+				return contiene;
+			}
+		}
+		
+		return !contiene;
 	}
 	
 	public static void gestionarVentas() {

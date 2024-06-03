@@ -6,21 +6,21 @@ public class Cliente {
 	int id;
 	String nombre;
 	String direccion;
-	Double telefono;
+	int telefono;
 	String localidad;
 	String provincia;
-	String mail;
+	String email;
 	ArrayList<Pedido> pedidos;
 	
 	
-	public Cliente(int id, String nombre, String direccion, Double telefono, String localidad, String provincia, String mail) {
-		this.id = id;
-		this.nombre = nombre;
-		this.direccion = direccion;
-		this.telefono = telefono;
-		this.localidad = localidad;
-		this.provincia = provincia;
-		this.mail = mail;
+	public Cliente(int id, String nombre, String direccion, int telefono, String localidad, String provincia, String email) {
+		setId(id);
+		setNombre(nombre);
+		setDireccion(direccion);
+		setTelefono(getTelefono());
+		setLocalidad(localidad);
+		setProvincia(provincia);
+		setEmail(email);
 		pedidos = new ArrayList<Pedido>();
 	}
 	
@@ -69,11 +69,11 @@ public class Cliente {
 		this.direccion = direccion;
 	}
 
-	public Double getTelefono() {
+	public int getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(Double telefono) {
+	public void setTelefono(int telefono) {
 		this.telefono = telefono;
 	}
 
@@ -93,18 +93,11 @@ public class Cliente {
 		this.provincia = provincia;
 	}
 
-	public String getMail() {
-		return mail;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	
-	
-
-	
-	
-	
-
 }
