@@ -6,14 +6,14 @@ public class Cliente {
 	int id;
 	String nombre;
 	String direccion;
-	int telefono;
+	String telefono;
 	String localidad;
 	String provincia;
 	String email;
 	ArrayList<Pedido> pedidos;
 	
 	
-	public Cliente(int id, String nombre, String direccion, int telefono, String localidad, String provincia, String email) {
+	public Cliente(int id, String nombre, String direccion, String telefono, String localidad, String provincia, String email) {
 		setId(id);
 		setNombre(nombre);
 		setDireccion(direccion);
@@ -69,11 +69,11 @@ public class Cliente {
 		this.direccion = direccion;
 	}
 
-	public int getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 

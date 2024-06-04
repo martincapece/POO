@@ -260,24 +260,25 @@ public class Main {
 	public static void agregarCliente() {
 		System.out.print("Ingrese id del cliente: ");
 		int id = sc.nextInt();
+		sc.nextLine();
 		
 		System.out.print("Ingrese nombre del cliente: ");
-		String nombre = sc.next();
+		String nombre = sc.nextLine();
 		
 		System.out.print("Ingrese direccion del cliente: ");
-		String direccion = sc.next();
+		String direccion = sc.nextLine();
 		
 		System.out.print("Ingrese telefono del cliente: ");
-		int telefono = sc.nextInt();
+		String telefono = sc.nextLine();
 		
 		System.out.print("Ingrese localidad del cliente: ");
-		String localidad = sc.next();
+		String localidad = sc.nextLine();
 		
 		System.out.print("Ingrese provincia del cliente: ");
-		String provincia = sc.next();
+		String provincia = sc.nextLine();
 		
 		System.out.print("Ingrese email del cliente: ");
-		String email = sc.next();
+		String email = sc.nextLine();
 		boolean estado = validarEmail(email);
 		do {
 			System.out.println("El email no es valido.");

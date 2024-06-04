@@ -24,7 +24,7 @@ public class Negocio {
 	
 	public Cliente RetornoCliente(int id) {
 		for(Cliente cliente: clientes) {
-			if(cliente.getId()==id) {
+			if(cliente.getId() == id) {
 				return cliente;
 			}
 		}
@@ -70,6 +70,16 @@ public class Negocio {
         } else {
             for (Autoparte autoparte : autopartes) {
                 System.out.println("ID: " + autoparte.getId() + ", Precio: " + autoparte.getPrecio() + ", Modelo: " + autoparte.getModelo());
+            }
+        }
+    }
+	
+	public void ListarClientes() {
+        if (clientes.isEmpty()) {
+            System.out.println("No hay clientes en el sistema.");
+        } else {
+            for (Cliente cliente : clientes) {
+                System.out.println("ID: " + cliente.getId() + ", Nombre: " + cliente.getNombre() + ", e-mail: " + cliente.getEmail());
             }
         }
     }
