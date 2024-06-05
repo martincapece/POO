@@ -3,14 +3,14 @@ import java.util.ArrayList;
 
 public class Cliente {
 	
-	int id;
-	String nombre;
-	String direccion;
-	String telefono;
-	String localidad;
-	String provincia;
-	String email;
-	ArrayList<Pedido> pedidos;
+	private int id;
+	private String nombre;
+	private String direccion;
+	private String telefono;
+	private String localidad;
+	private String provincia;
+	private String email;
+	private ArrayList<Pedido> pedidos;
 	
 	
 	public Cliente(int id, String nombre, String direccion, String telefono, String localidad, String provincia, String email) {
@@ -43,10 +43,8 @@ public class Cliente {
 		System.out.println("Se agrego el pedido a la lista del cliente.");
 	}
 	
-	
-
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {
@@ -54,7 +52,7 @@ public class Cliente {
 	}
 
 	public String getNombre() {
-		return nombre;
+		return this.nombre;
 	}
 
 	public void setNombre(String nombre) {
@@ -62,7 +60,7 @@ public class Cliente {
 	}
 
 	public String getDireccion() {
-		return direccion;
+		return this.direccion;
 	}
 
 	public void setDireccion(String direccion) {
@@ -70,7 +68,7 @@ public class Cliente {
 	}
 
 	public String getTelefono() {
-		return telefono;
+		return this.telefono;
 	}
 
 	public void setTelefono(String telefono) {
@@ -86,7 +84,7 @@ public class Cliente {
 	}
 
 	public String getProvincia() {
-		return provincia;
+		return this.provincia;
 	}
 
 	public void setProvincia(String provincia) {
@@ -94,7 +92,7 @@ public class Cliente {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {

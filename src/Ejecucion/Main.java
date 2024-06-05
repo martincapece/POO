@@ -9,12 +9,20 @@ public class Main {
 	
 	public static void main(String[] args) {
 		negocio = new Negocio();
+		Usuario administrador= new Usuario(1, "administrador", "1234", "administrador@uade.edu.ar");
+		negocio.CargarUsuario(administrador);
 		String opcion = "";
 		String funcionalidad = "";	
 		String opcionCliente = "";
 		String opcionPedido = "";
+		Usuario usuario = null;
 		
 		while (true) {
+			if (usuario == null) {
+				usuario = iniciarSesion();				
+			}
+			
+			System.out.println("¡Bienvenido " + usuario.getUsuario() + "!");
 			System.out.println("1- Gestionar autopartes");
 			System.out.println("2- Agregar clientes");
 			System.out.println("3- Gestionar pedidos");
@@ -88,7 +96,63 @@ public class Main {
 	
 	System.out.println("¡Hasta la proxima!");
 		
-}		
+}
+	public static Usuario iniciarSesion() {
+		System.out.println("1- Registrarse");
+		System.out.println("2- Iniciar Sesion");
+		System.out.print("Seleccione una opcion: ");
+		int opcion = sc.nextInt();
+		if (opcion == 1) {
+			System.out.print("Ingresar id: ");
+			int id = sc.nextInt();
+			sc.nextLine();
+			
+			System.out.print("Ingresar nombre de usuario: ");
+			String username = sc.nextLine();
+			
+			System.out.print("Ingresar contraseña: ");
+			String contraseña = sc.next();
+			boolean estadoContraseña = validarContraseña(contraseña);
+			while (!estadoContraseña) {
+				System.out.println("La contraseña es invalida.");
+				System.out.print("Ingresar una contraseña valida: ");
+				contraseña = sc.next();
+				estadoContraseña = validarContraseña(contraseña);
+			}
+			
+			System.out.print("Ingresar email: ");
+			String email = sc.next();
+			boolean estadoEmail = validarEmail(email);
+			while (!estadoEmail) {
+				System.out.println("La contraseña es invalida.");
+				System.out.print("Ingresar una contraseña valida: ");
+				email = sc.next();
+				estadoEmail = validarContraseña(email);
+			}
+			
+			Usuario user = new Usuario(id, username, contraseña, email);
+			
+			negocio.CargarUsuario(user);
+			
+			return user;
+		} else if (opcion == 2) {
+			System.out.println("Ingresar id: ");
+			int Id = sc.nextInt();
+			
+			Usuario usuario = negocio.RetornoUsuario(Id);
+			if (usuario == null) {
+				System.out.println("No se encontro ningun usuario con el ID: " + Id);
+				iniciarSesion();
+			} else {
+				return usuario;
+			}
+		} else {
+			System.out.println("La opcion ingresada no es valida.");
+			System.out.println();
+			iniciarSesion();
+		}
+		return null;
+	}
 	
 	public static void agregarAutoparte() {
 		System.out.print("Ingresar id de la autoparte: ");
@@ -402,6 +466,30 @@ public class Main {
 		}
 		
 		return !valido;
+	}
+	
+	public static boolean validarContraseña(String contraseña){
+		boolean valido = true;
+		
+		boolean resultado = contieneCaracterEspecial(contraseña);
+		if ((contraseña.length() < 8 || contraseña.length() > 32) || resultado) {
+			return !valido;
+		}
+		
+		return valido;
+	}
+	
+	public static boolean contieneCaracterEspecial(String cadena) {
+		boolean contiene = true;
+		char[] caracteres = cadena.toCharArray();
+		
+		for (char caracter : caracteres) {
+			if (!Character.isLetterOrDigit(caracter)) {
+				return contiene;
+			}
+		}
+		
+		return !contiene;
 	}
 	
 	public static boolean validarEmail(String email) {
