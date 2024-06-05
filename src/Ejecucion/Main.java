@@ -134,7 +134,7 @@ public class Main {
 		System.out.print("Inidicar que desea modificar: ");
 		String tipo = sc.next();
 		
-		
+		 
 		
 		switch (tipo) {
 		case "1":
