@@ -9,11 +9,20 @@ public class Main {
 	
 	public static void main(String[] args) {
 		negocio = new Negocio();
+		Usuario administrador= new Usuario(1, "administrador", "1234", "administrador@uade.edu.ar");
+		negocio.CargarUsuario(administrador);
 		String opcion = "";
 		String funcionalidad = "";	
-		String opcionpedido = "";
+		String opcionCliente = "";
+		String opcionPedido = "";
+		Usuario usuario = null;
 		
 		while (true) {
+			if (usuario == null) {
+				usuario = iniciarSesion();				
+			}
+			
+			System.out.println("¡Bienvenido " + usuario.getUsuario() + "!");
 			System.out.println("1- Gestionar autopartes");
 			System.out.println("2- Agregar clientes");
 			System.out.println("3- Gestionar pedidos");
@@ -48,23 +57,37 @@ public class Main {
 					}
 				} while(!opcion.equals("f"));
 			} else if(funcionalidad.equals("2")) {
-				agregarCliente();
+				do {
+					System.out.println();
+					System.out.println("a- Agregar un nuevo cliente");
+					System.out.println("b- Listar clientes");
+					System.out.println("c- Salir");
+					System.out.print("Ingrese una opción: ");
+					opcionCliente = sc.next();
+					System.out.println();
+					
+					if(opcionCliente.equals("a")) {
+						agregarCliente();
+					}else if(opcionCliente.equals("b")) {
+						listarCliente();
+					}
+				}while(!opcionCliente.equals("c"));
 			} else if(funcionalidad.equals("3")) {
 				do {
 					System.out.println();
 					System.out.println("a- Iniciar pedido");
 					System.out.println("b- Cancelar pedido");
 					System.out.println("c- Salir");
-					System.out.print("Ingrese una opción (i para iniciar un pedido, t para cancelarlo, s para salir): ");
-					opcionpedido = sc.next();
+					System.out.print("Ingrese una opción: ");
+					opcionPedido = sc.next();
 					System.out.println();
 					
-					if(opcionpedido.equals("a")) {
+					if(opcionPedido.equals("a")) {
 						iniciarPedido();
-					}else if(opcionpedido.equals("b")) {
+					}else if(opcionPedido.equals("b")) {
 						cancelarPedido();
 					}
-				}while(!opcionpedido.equals("c"));	
+				}while(!opcionPedido.equals("c"));	
 			}else if(funcionalidad.equals("4")) {
 				gestionarVentas();
 			} else {break;}
@@ -73,31 +96,104 @@ public class Main {
 	
 	System.out.println("¡Hasta la proxima!");
 		
-}		
+}
+	public static Usuario iniciarSesion() {
+		System.out.println("1- Registrarse");
+		System.out.println("2- Iniciar Sesion");
+		System.out.print("Seleccione una opcion: ");
+		int opcion = sc.nextInt();
+		if (opcion == 1) {
+			System.out.print("Ingresar id: ");
+			int id = sc.nextInt();
+			sc.nextLine();
+			
+			System.out.print("Ingresar nombre de usuario: ");
+			String username = sc.nextLine();
+			
+			System.out.print("Ingresar contraseña: ");
+			String contraseña = sc.next();
+			boolean estadoContraseña = validarContraseña(contraseña);
+			while (!estadoContraseña) {
+				System.out.println("La contraseña es invalida.");
+				System.out.print("Ingresar una contraseña valida: ");
+				contraseña = sc.next();
+				estadoContraseña = validarContraseña(contraseña);
+			}
+			
+			System.out.print("Ingresar email: ");
+			String email = sc.next();
+			boolean estadoEmail = validarEmail(email);
+			while (!estadoEmail) {
+				System.out.println("La contraseña es invalida.");
+				System.out.print("Ingresar una contraseña valida: ");
+				email = sc.next();
+				estadoEmail = validarContraseña(email);
+			}
+			
+			Usuario user = new Usuario(id, username, contraseña, email);
+			
+			negocio.CargarUsuario(user);
+			
+			return user;
+		} else if (opcion == 2) {
+			System.out.println("Ingresar id: ");
+			int Id = sc.nextInt();
+			
+			Usuario usuario = negocio.RetornoUsuario(Id);
+			if (usuario == null) {
+				System.out.println("No se encontro ningun usuario con el ID: " + Id);
+				iniciarSesion();
+			} else {
+				return usuario;
+			}
+		} else {
+			System.out.println("La opcion ingresada no es valida.");
+			System.out.println();
+			iniciarSesion();
+		}
+		return null;
+	}
 	
 	public static void agregarAutoparte() {
 		System.out.print("Ingresar id de la autoparte: ");
 		int id = sc.nextInt();
+		sc.nextLine();
 		
 		System.out.print("Ingresar denominacion: ");
-		String denominacion = sc.next();
+		String denominacion = sc.nextLine();
 		
 		System.out.print("Ingresar descripcion: ");
-		String descripcion = sc.next();
+		String descripcion = sc.nextLine();
 		
 		System.out.print("Ingresar categoria: ");
-		String categoria = sc.next();
+		String categoria = sc.nextLine();
+		
+		boolean estadoCat = valirdarLongitud(categoria);
+		while (!estadoCat) {
+			System.out.println("La categoria debe contener menos de 50 caracteres.");
+			System.out.println("Ingrese nuevamente la categoria: ");
+			categoria = sc.nextLine();
+			estadoCat = valirdarLongitud(categoria);
+		}
 		
 		System.out.print("Ingresar marca: ");
-		String marca = sc.next();
+		String marca = sc.nextLine();
+		
+		boolean estadoMar = valirdarLongitud(marca);
+		while (!estadoMar) {
+			System.out.println("La categoria debe contener menos de 50 caracteres.");
+			System.out.println("Ingrese nuevamente la categoria: ");
+			marca = sc.nextLine();
+			estadoMar = valirdarLongitud(marca);
+		}
 		
 		System.out.print("Ingresar vehiculo: ");
-		String vehiculo = sc.next();
+		String vehiculo = sc.nextLine();
 		
 		System.out.print("Ingresar modelo: ");
-		String modelo = sc.next();
+		String modelo = sc.nextLine();
 		
-		System.out.print("Ingresar precio: ");
+		System.out.print("Ingresar precio: $");
 		double precio = sc.nextDouble();
 		
 		System.out.print("Ingresar stock: ");
@@ -105,9 +201,10 @@ public class Main {
 		
 		System.out.print("Ingresar stock minimo: ");
 		int stockMinimo = sc.nextInt();
+		sc.nextLine();
 		
 		System.out.print("Ingresar enlace: ");
-		String enlace = sc.next();
+		String enlace = sc.nextLine();
 		
 		Autoparte autoparte = new Autoparte(id, denominacion, descripcion, categoria, marca, vehiculo, modelo, precio, stock, stockMinimo, enlace);
 		
@@ -165,11 +262,27 @@ public class Main {
 			System.out.print("Ingresar categoria: ");
 			String nuevaCategoria = sc.next();
 			
+			boolean estadoNuevaCat = valirdarLongitud(nuevaCategoria);
+			while (!estadoNuevaCat) {
+				System.out.println("La categoria debe contener menos de 50 caracteres.");
+				System.out.println("Ingrese nuevamente la categoria: ");
+				nuevaCategoria = sc.nextLine();
+				estadoNuevaCat = valirdarLongitud(nuevaCategoria);
+			}
+			
 			autoparte.setCategoria(nuevaCategoria);
 			break;
 		case "5":
 			System.out.print("Ingresar marca: ");
 			String nuevaMarca = sc.next();
+			
+			boolean estadoNuevaMar= valirdarLongitud(nuevaMarca);
+			while (!estadoNuevaMar) {
+				System.out.println("La categoria debe contener menos de 50 caracteres.");
+				System.out.println("Ingrese nuevamente la categoria: ");
+				nuevaMarca = sc.nextLine();
+				estadoNuevaMar = valirdarLongitud(nuevaMarca);
+			}
 			
 			autoparte.setMarca(nuevaMarca);
 			break;
@@ -186,7 +299,7 @@ public class Main {
 			autoparte.setModelo(nuevoModelo);
 			break;
 		case "8":
-			System.out.print("Ingresar precio: ");
+			System.out.print("Ingresar precio: $");
 			double nuevoPrecio = sc.nextDouble();
 			
 			autoparte.setPrecio(nuevoPrecio);
@@ -270,9 +383,23 @@ public class Main {
 		
 		System.out.print("Ingrese telefono del cliente: ");
 		String telefono = sc.nextLine();
+		boolean estadoTel = contieneGuion(telefono);
+		while (!estadoTel) {
+			System.out.println("El telefono debe contener un guion luego de la caracteristica.");
+			System.out.print("Introduzca un numero de telefono valido: ");
+			telefono = sc.nextLine();
+			estadoTel = contieneGuion(telefono);
+		} 
 		
 		System.out.print("Ingrese localidad del cliente: ");
 		String localidad = sc.nextLine();
+		boolean estadoLoc = valirdarLongitud(localidad);
+		while (!estadoLoc) {
+			System.out.println("La localidad debe contener menos de 50 caracteres.");
+			System.out.println("Ingrese nuevamente la localidad: ");
+			localidad = sc.nextLine();
+			estadoLoc = valirdarLongitud(localidad);
+		}
 		
 		System.out.print("Ingrese provincia del cliente: ");
 		String provincia = sc.nextLine();
@@ -280,15 +407,19 @@ public class Main {
 		System.out.print("Ingrese email del cliente: ");
 		String email = sc.nextLine();
 		boolean estado = validarEmail(email);
-		do {
+		while (!estado) {
 			System.out.println("El email no es valido.");
 			System.out.print("Introduzca un email valido: ");
 			email = sc.next();
 			estado = validarEmail(email);
-		} while (estado == false);
+		}
 		
 		Cliente cliente = new Cliente(id,nombre,direccion,telefono,localidad,provincia,email);
 		negocio.AgregarCliente(cliente);
+	}
+	
+	public static void listarCliente() {
+		negocio.ListarClientes();
 	}
 	
 	public static void iniciarPedido() {
@@ -327,6 +458,40 @@ public class Main {
 		pedido.CancelarPedido();
 	}
 	
+	public static boolean valirdarLongitud(String cadena) {
+		boolean valido = true;
+		
+		if (cadena.length() >= 1 && cadena.length() <= 50) {
+			return valido;
+		}
+		
+		return !valido;
+	}
+	
+	public static boolean validarContraseña(String contraseña){
+		boolean valido = true;
+		
+		boolean resultado = contieneCaracterEspecial(contraseña);
+		if ((contraseña.length() < 8 || contraseña.length() > 32) || resultado) {
+			return !valido;
+		}
+		
+		return valido;
+	}
+	
+	public static boolean contieneCaracterEspecial(String cadena) {
+		boolean contiene = true;
+		char[] caracteres = cadena.toCharArray();
+		
+		for (char caracter : caracteres) {
+			if (!Character.isLetterOrDigit(caracter)) {
+				return contiene;
+			}
+		}
+		
+		return !contiene;
+	}
+	
 	public static boolean validarEmail(String email) {
 		boolean valido = true;
 		
@@ -356,6 +521,19 @@ public class Main {
 			}
 		}
 		
+		return !contiene;
+	}
+	
+	public static boolean contieneGuion(String cadena) {
+		boolean contiene = true;
+		char[] caracteres = cadena.toCharArray();
+		
+		for (int i = 0; i < caracteres.length; i++) {
+			char c = caracteres[i];
+			if (c == '-' && (i == 2 || i == 3)) {
+				return contiene;
+			}
+		}
 		return !contiene;
 	}
 	

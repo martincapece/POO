@@ -1,30 +1,24 @@
 package Negocio_Autopartes;
 
 public class Usuario {
-	int id;
-	String nombre;
-	String contraseña;
+	private int id;
+	private String usuario;
+	private String contraseña;
+	private String email;
 	
-	public Usuario(int id, String nombre, String contraseña) {
+	public Usuario(int id, String usuario, String contraseña, String email) {
 		setId(id);
-		setNombre(nombre);
+		setUsuario(usuario);
 		setContraseña(contraseña);
+		setEmail(email);		
 	}
-
+	
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 
 	public String getContraseña() {
@@ -34,6 +28,20 @@ public class Usuario {
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
 	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
 	
-	
+	public String getUsuario() {
+		return this.usuario;
+	}
 }

@@ -6,11 +6,13 @@ public class Negocio {
 	ArrayList<Autoparte> autopartes;
 	ArrayList<Cliente> clientes;
 	ArrayList<Venta> ventas;
+	ArrayList<Usuario> usuarios;
 	
 	public Negocio() {
 		autopartes = new ArrayList<Autoparte>();
 		clientes = new ArrayList<Cliente>();
 		ventas = new ArrayList<Venta>();
+		usuarios = new ArrayList<Usuario>();
 	}
 	
 	public Autoparte RetornoAutoparte(int id) {
@@ -31,10 +33,27 @@ public class Negocio {
 		return null;
 	}
 	
+	public Usuario RetornoUsuario(int id) {
+		for(Usuario usuario : usuarios) {
+			if(usuario.getId() == id) {
+				return usuario;
+			}
+		}
+		return null;
+	}
+	
 	
 	public void CargarCliente(Cliente cliente) {
 		clientes.add(cliente);
 		System.out.println("Se agrego al cliente a la lista");
+	}
+	
+	public void CargarUsuario(Usuario usuario) {
+		usuarios.add(usuario);
+		if (usuario.getId() != 1) {
+			System.out.println("¡El usuario fue cargado en el sistema!");	
+			System.out.println();
+		}
 	}
 	
 	
