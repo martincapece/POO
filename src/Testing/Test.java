@@ -368,7 +368,7 @@ public class Test {
 		String fecha = sc.next();
 		System.out.print("Ingrese monto total del pedido: ");
 		Double monto = sc.nextDouble();
-		Pedido pedido = new Pedido(id,fecha,monto);
+		VentaReserva pedido = new VentaReserva(id,fecha,monto);
 
 		System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
 		int idautoparte = sc.nextInt();
@@ -390,7 +390,7 @@ public class Test {
 		System.out.println("Ingrese id del pedido para eliminarlo");
 		int idpedido = sc.nextInt();
 		Cliente cliente = negocio.RetornoCliente(idcliente);
-		Pedido pedido = cliente.retornoPedido(idpedido);
+		VentaReserva pedido = cliente.retornoPedido(idpedido);
 		pedido.CancelarPedido();
 	}
 	

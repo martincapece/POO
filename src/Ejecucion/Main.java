@@ -18,6 +18,7 @@ public class Main {
 		Usuario usuario = null;
 		
 		while (true) {
+			
 			if (usuario == null) {
 				usuario = iniciarSesion();				
 			}
@@ -77,7 +78,8 @@ public class Main {
 					System.out.println();
 					System.out.println("a- Iniciar pedido");
 					System.out.println("b- Cancelar pedido");
-					System.out.println("c- Salir");
+					System.out.println("c- Listar pedidos");
+					System.out.println("d- Salir");
 					System.out.print("Ingrese una opción: ");
 					opcionPedido = sc.next();
 					System.out.println();
@@ -86,8 +88,10 @@ public class Main {
 						iniciarPedido();
 					}else if(opcionPedido.equals("b")) {
 						cancelarPedido();
+					}else if(opcionPedido.equals("c")) {
+						listarPedidos();
 					}
-				}while(!opcionPedido.equals("c"));	
+				}while(!opcionPedido.equals("d"));	
 			}else if(funcionalidad.equals("4")) {
 				gestionarVentas();
 			} else {break;}
@@ -136,7 +140,7 @@ public class Main {
 			
 			return user;
 		} else if (opcion == 2) {
-			System.out.println("Ingresar id: ");
+			System.out.print("Ingresar id: ");
 			int Id = sc.nextInt();
 			
 			Usuario usuario = negocio.RetornoUsuario(Id);
@@ -426,13 +430,17 @@ public class Main {
 		System.out.print("Ingrese id del cliente para cargarle su pedido: ");
 		int idcliente = sc.nextInt();
 		Cliente cliente = negocio.RetornoCliente(idcliente);
+		
 		System.out.print("Ingrese id del pedido: ");
 		int id = sc.nextInt();
+		
 		System.out.print("Ingrese fecha del pedido: ");
 		String fecha = sc.next();
+		
 		System.out.print("Ingrese monto total del pedido: ");
 		Double monto = sc.nextDouble();
-		Pedido pedido = new Pedido(id,fecha,monto);
+		
+		VentaReserva pedido = new VentaReserva(id,fecha,monto);
 
 		System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
 		int idautoparte = sc.nextInt();
@@ -446,16 +454,62 @@ public class Main {
 			idautoparte = sc.nextInt();
 		}
 		pedido.disminuirStock();
+		
+		cliente.CargarPedido(pedido);
+	}
+	
+	public static void gestionarVentas() {
+		System.out.print("Ingrese id del cliente para cargarle su pedido: ");
+		int idcliente = sc.nextInt();
+		Cliente cliente = negocio.RetornoCliente(idcliente);
+		
+		System.out.print("Ingrese id del pedido: ");
+		int id = sc.nextInt();
+		
+		System.out.print("Ingrese fecha del pedido: ");
+		String fecha = sc.next();
+		
+		System.out.print("Ingrese monto total del pedido: ");
+		Double monto = sc.nextDouble();
+		
+		Venta pedido = new VentaDirecta(id,fecha,monto);
+
+		System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
+		int idautoparte = sc.nextInt();
+		while(idautoparte!=-1) {
+			Autoparte autoparte = negocio.RetornoAutoparte(idautoparte);
+			pedido.CargarAutopartePed(autoparte);
+			System.out.println("Ingrese cantidad de la autoparte");
+			int cantidad = sc.nextInt();
+			pedido.CargarCantidadPed(cantidad);
+			System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
+			idautoparte = sc.nextInt();
+		}
+		pedido.disminuirStock();
+		
+		cliente.CargarPedido(pedido);
 	}
 	
 	public static void cancelarPedido() {
 		System.out.println("Ingrese id del cliente para eliminar el pedido de su lista");
-		int idcliente = sc.nextInt();
+		int idCliente = sc.nextInt();
+		
 		System.out.println("Ingrese id del pedido para eliminarlo");
-		int idpedido = sc.nextInt();
-		Cliente cliente = negocio.RetornoCliente(idcliente);
-		Pedido pedido = cliente.retornoPedido(idpedido);
+		int idPedido = sc.nextInt();
+		
+		Cliente cliente = negocio.RetornoCliente(idCliente);
+		VentaReserva pedido = (VentaReserva) cliente.RetornoPedido(idPedido);
 		pedido.CancelarPedido();
+		
+		cliente.EliminarPedido(idPedido);
+	}
+	
+	public static void listarPedidos() {
+		System.out.print("Ingresar el id del cliente: ");
+		int idCliente = sc.nextInt();
+		Cliente cliente = negocio.RetornoCliente(idCliente);
+		
+		cliente.ListarPedidos();
 	}
 	
 	public static boolean valirdarLongitud(String cadena) {
@@ -535,10 +589,6 @@ public class Main {
 			}
 		}
 		return !contiene;
-	}
-	
-	public static void gestionarVentas() {
-		
 	}
 
 }

@@ -10,7 +10,7 @@ public class Cliente {
 	private String localidad;
 	private String provincia;
 	private String email;
-	private ArrayList<Pedido> pedidos;
+	private ArrayList<Venta> pedidos;
 	
 	
 	public Cliente(int id, String nombre, String direccion, String telefono, String localidad, String provincia, String email) {
@@ -21,12 +21,12 @@ public class Cliente {
 		setLocalidad(localidad);
 		setProvincia(provincia);
 		setEmail(email);
-		pedidos = new ArrayList<Pedido>();
+		pedidos = new ArrayList<Venta>();
 	}
 	
 	
-	public Pedido retornoPedido(int id) {
-		for(Pedido pedido: pedidos) {
+	public Venta RetornoPedido(int id) {
+		for(Venta pedido: pedidos) {
 			if(pedido.getId()==id) {
 				return pedido;
 			}else {
@@ -38,10 +38,29 @@ public class Cliente {
 	}
 	
 	
-	public void CargarPedido(Pedido pedido) {
+	public void CargarPedido(Venta pedido) {
 		pedidos.add(pedido);
 		System.out.println("Se agrego el pedido a la lista del cliente.");
 	}
+	
+	public void EliminarPedido(int id) {
+		for (Venta pedido : pedidos) {
+			if (pedido.getId() == id) {
+				pedidos.remove(pedido);
+			}
+		}
+		System.out.println("Se elimino el pedido del cliente.");
+	}
+	
+	public void ListarPedidos() {
+        if (pedidos.isEmpty()) {
+            System.out.println("No hay pedidos por parte del cliente.");
+        } else {
+            for (Venta pedido : pedidos) {
+                System.out.println("ID: " + pedido.getId() + ", Fecha: " + pedido.getFecha() + ", Total: " + pedido.getMontoTotal());
+            }
+        }
+    }
 	
 	public int getId() {
 		return this.id;
