@@ -68,28 +68,45 @@ public class Negocio {
 		}
 	}
 	
-	public void EliminarAutoparte(int id) {
-		boolean existe = this.VerificarAutoparte(id);
-		
-		if (!existe) {
-			System.out.println("La autoparte no existe");
-		} else {
-			for (Autoparte autoparte : autopartes) {
-				if (autoparte.getId() == id) {
-					autopartes.remove(autoparte);
-					System.out.println("¡La autoparte fue eliminada con exito!");
-				}
-			}
+	public void MostrarIdAutos() {
+		System.out.println("Listado de IDs disponibles a eliminar");
+		for(Autoparte autoparte:autopartes) {
+			System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo());
+			
 		}
 	}
 	
+	public void EliminarAutoparte(int id) {
+	    boolean existe = this.VerificarAutoparte(id);
+	    
+	    if (!existe) {
+	        System.out.println("La autoparte no existe");
+	    } else {
+	        Autoparte elegida = null;
+	        for (Autoparte autoparte : autopartes) {
+	            if (autoparte.getId() == id) {
+	                elegida = autoparte;
+	                break; // Salimos del bucle una vez que encontramos la autoparte
+	            }
+	        }
+	        if (elegida != null) {
+	            autopartes.remove(elegida);
+	            System.out.println("¡La autoparte fue eliminada con éxito!");
+	        }
+	    }
+	}
+
 	public void ListarAutopartes() {
         if (autopartes.isEmpty()) {
             System.out.println("No hay autopartes en la lista.");
         } else {
             for (Autoparte autoparte : autopartes) {
-                System.out.println("ID: " + autoparte.getId() + ", Precio: " + autoparte.getPrecio() + ", Modelo: " + autoparte.getModelo());
+                System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo()+ ", Precio: " + autoparte.getPrecio() +" Cantidad de Stock: " +autoparte.getStock());
+                if (autoparte.getStock()<autoparte.getStockMinimo()) {
+                	System.out.println("EL STOCK ESTA POR DEBAJO DEL MINIMO. REPONER STOCK");
+                }
             }
+            
         }
     }
 	

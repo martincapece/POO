@@ -336,6 +336,7 @@ public class Main {
 	}
 
 	public static void bajaAutoparte() {
+		negocio.MostrarIdAutos();
 		System.out.print("Ingresar el id de la autoparte a eliminar: ");
 		int id = sc.nextInt();	
 		negocio.EliminarAutoparte(id);
