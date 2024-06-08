@@ -428,36 +428,51 @@ public class Main {
 	}
 	
 	public static void iniciarPedido() {
-		System.out.print("Ingrese id del cliente para cargarle su pedido: ");
-		int idcliente = sc.nextInt();
-		Cliente cliente = negocio.RetornoCliente(idcliente);
-		
-		System.out.print("Ingrese id del pedido: ");
-		int id = sc.nextInt();
-		
-		System.out.print("Ingrese fecha del pedido: ");
-		String fecha = sc.next();
-		
-		System.out.print("Ingrese monto total del pedido: ");
-		Double monto = sc.nextDouble();
-		
-		Pedido pedido = new Pedido(id,fecha,monto);
+	    System.out.print("Ingrese id del cliente para cargarle su pedido: ");
+	    int idcliente = sc.nextInt();
+	    Cliente cliente = negocio.RetornoCliente(idcliente);
+	    if (cliente == null) {
+	        System.out.println("El cliente no existe");
+	    } else {
+	        System.out.print("Ingrese id del pedido: ");
+	        int id = sc.nextInt();
+	        
+	        System.out.print("Ingrese fecha del pedido: ");
+	        String fecha = sc.next();
+	        
+	        System.out.print("Ingrese monto total del pedido: ");
+	        Double monto = sc.nextDouble();
+	        
+	        Pedido pedido = new Pedido(id, fecha, monto);
 
-		System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
-		int idautoparte = sc.nextInt();
-		while(idautoparte!=-1) {
-			Autoparte autoparte = negocio.RetornoAutoparte(idautoparte);
-			pedido.CargarAutopartePed(autoparte);
-			System.out.println("Ingrese cantidad de la autoparte");
-			int cantidad = sc.nextInt();
-			pedido.CargarCantidadPed(cantidad);
-			System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
-			idautoparte = sc.nextInt();
-		}
-		pedido.disminuirStock();
-		
-		cliente.CargarPedido(pedido);
+	        System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
+	        int idautoparte = sc.nextInt();
+	        while (idautoparte != -1) {
+	            Autoparte autoparte = negocio.RetornoAutoparte(idautoparte);
+	            if (autoparte == null) {
+	                System.out.println("La autoparte con ID " + idautoparte + " no existe.");
+	            } else {
+	                pedido.CargarAutopartePed(autoparte);
+	                System.out.println("Ingrese cantidad de la autoparte");
+	                int cantidad = sc.nextInt();
+	                pedido.CargarCantidadPed(cantidad);
+	            }
+	            System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
+	            idautoparte = sc.nextInt();
+	        }
+	        
+	        if (!pedido.getAutopartes().isEmpty()) { // Verifica si se han cargado autopartes en el pedido
+	            if (pedido.disminuirStock()) {
+	                cliente.CargarPedido(pedido);
+	            } else {
+	                System.out.println("La operación no se completó debido a falta de stock.");
+	            }
+	        } else {
+	            System.out.println("El pedido no contiene ninguna autoparte.");
+	        }
+	    }
 	}
+
 	
 	public static void gestionarVentas() {
 		System.out.print("Ingrese id del cliente para cargarle su venta: ");

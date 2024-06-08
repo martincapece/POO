@@ -21,6 +21,11 @@ public class Pedido {
 		autoparteCantidad = new ArrayList<>();
 	}
 	
+	
+	public ArrayList<Autoparte> getAutopartes() {
+	    return autopartepedido;
+	}
+	
 	public void CargarAutopartePed(Autoparte autoparte) {
 		autopartepedido.add(autoparte);
 	}
@@ -53,16 +58,20 @@ public class Pedido {
 		this.montoTotal = montoTotal;
 	}
 	
-	public void disminuirStock() {
+	public boolean disminuirStock() {
+		
+		
 	    for (int i = 0; i < autopartepedido.size(); i++) {
 	        if (verificarStock(autopartepedido.get(i), autoparteCantidad.get(i))) {
 	            autopartepedido.get(i).restarStock(autoparteCantidad.get(i));
 	        } else {
 	            System.out.println("No había suficiente stock para: " + autopartepedido.get(i).getModelo());
-	            return;
+	            return false;
 	        }
 	    }
+	    return true;
 	}
+
 
 	public boolean verificarStock(Autoparte autoparte, int cant) {
 	    return autoparte.getStock() >= cant;
