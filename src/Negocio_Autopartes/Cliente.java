@@ -10,7 +10,8 @@ public class Cliente {
 	private String localidad;
 	private String provincia;
 	private String email;
-	private ArrayList<Venta> pedidos;
+	private ArrayList<Pedido> pedidos;
+	private ArrayList<Venta> ventas;
 	
 	
 	public Cliente(int id, String nombre, String direccion, String telefono, String localidad, String provincia, String email) {
@@ -21,12 +22,13 @@ public class Cliente {
 		setLocalidad(localidad);
 		setProvincia(provincia);
 		setEmail(email);
-		pedidos = new ArrayList<Venta>();
+		pedidos = new ArrayList<Pedido>();
+		ventas = new ArrayList<Venta>();
 	}
 	
 	
-	public Venta RetornoPedido(int id) {
-		for(Venta pedido: pedidos) {
+	public Pedido RetornoPedido(int id) {
+		for(Pedido pedido: pedidos) {
 			if(pedido.getId()==id) {
 				return pedido;
 			}else {
@@ -37,14 +39,31 @@ public class Cliente {
 		return null;
 	}
 	
+	public Venta RetornoVenta(int id) {
+		for(Venta venta: ventas) {
+			if(venta.getId()==id) {
+				return venta;
+			}else {
+				System.out.println("la venta no existe");
+				return null;
+			}
+		}
+		return null;
+	}
 	
-	public void CargarPedido(Venta pedido) {
+	
+	public void CargarPedido(Pedido pedido) {
 		pedidos.add(pedido);
 		System.out.println("Se agrego el pedido a la lista del cliente.");
 	}
 	
+	public void CargarVenta(Venta venta) {
+		ventas.add(venta);
+		System.out.println("Se agrego el pedido a la lista del cliente.");
+	}
+	
 	public void EliminarPedido(int id) {
-		for (Venta pedido : pedidos) {
+		for (Pedido pedido : pedidos) {
 			if (pedido.getId() == id) {
 				pedidos.remove(pedido);
 			}
@@ -56,8 +75,18 @@ public class Cliente {
         if (pedidos.isEmpty()) {
             System.out.println("No hay pedidos por parte del cliente.");
         } else {
-            for (Venta pedido : pedidos) {
+            for (Pedido pedido : pedidos) {
                 System.out.println("ID: " + pedido.getId() + ", Fecha: " + pedido.getFecha() + ", Total: " + pedido.getMontoTotal());
+            }
+        }
+    }
+	
+	public void ListarVentas() {
+        if (ventas.isEmpty()) {
+            System.out.println("No hay ventas por parte del cliente.");
+        } else {
+            for (Venta venta : ventas) {
+                System.out.println("ID: " + venta.getId() + ", Fecha: " + venta.getFecha() + ", Total: " + venta.getMontoTotal());
             }
         }
     }
@@ -117,4 +146,13 @@ public class Cliente {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public void ConvertirPedidoAVenta(Pedido pedido) {
+	    Venta venta = pedido.convertirAVenta();
+	    ventas.add(venta);
+	    System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
+	}
+
+	
+	
 }

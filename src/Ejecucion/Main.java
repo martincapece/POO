@@ -441,7 +441,7 @@ public class Main {
 		System.out.print("Ingrese monto total del pedido: ");
 		Double monto = sc.nextDouble();
 		
-		VentaReserva pedido = new VentaReserva(id,fecha,monto);
+		Pedido pedido = new Pedido(id,fecha,monto);
 
 		System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
 		int idautoparte = sc.nextInt();
@@ -460,35 +460,92 @@ public class Main {
 	}
 	
 	public static void gestionarVentas() {
-		System.out.print("Ingrese id del cliente para cargarle su pedido: ");
+		System.out.print("Ingrese id del cliente para cargarle su venta: ");
 		int idcliente = sc.nextInt();
 		Cliente cliente = negocio.RetornoCliente(idcliente);
 		
-		System.out.print("Ingrese id del pedido: ");
-		int id = sc.nextInt();
+		if (cliente==null) {System.out.println("Error: No existe un cliente con el ID proporcionado.");}
+		else {
 		
-		System.out.print("Ingrese fecha del pedido: ");
-		String fecha = sc.next();
+		System.out.print("Ingrese 1 para venta directa, 2 para registrar pedido reservado como una venta ");
+		int tipoventa = sc.nextInt();
 		
-		System.out.print("Ingrese monto total del pedido: ");
-		Double monto = sc.nextDouble();
-		
-		Venta pedido = new VentaDirecta(id,fecha,monto);
-
-		System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
-		int idautoparte = sc.nextInt();
-		while(idautoparte!=-1) {
-			Autoparte autoparte = negocio.RetornoAutoparte(idautoparte);
-			pedido.CargarAutopartePed(autoparte);
-			System.out.println("Ingrese cantidad de la autoparte");
-			int cantidad = sc.nextInt();
-			pedido.CargarCantidadPed(cantidad);
+		if (tipoventa==1) {
+			System.out.print("Ingrese id de la venta: ");
+			int id = sc.nextInt();
+			
+			System.out.print("Ingrese fecha de la venta: ");
+			String fecha = sc.next();
+			
+			System.out.print("Ingrese monto total de la venta: ");
+			Double monto = sc.nextDouble();
+			
+			System.out.print("Ingrese metodo de pago: td para tarjeta de debito. tc para tarjeta de credito. ef para efectivo ");
+			String metodopago = sc.next();
+			int cuotas;
+			
+			if (metodopago.equals("tj")) {
+				System.out.print("Ingrese cuotas a pagar: ");
+				cuotas = sc.nextInt();
+			}
+			else {cuotas=1;}
+			
+			VentaDirecta ventadirecta = new VentaDirecta(id,fecha,monto, metodopago, cuotas);
+			
+			
+			
 			System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
-			idautoparte = sc.nextInt();
+			int idautoparte = sc.nextInt();
+			while(idautoparte!=-1) {
+				Autoparte autoparte = negocio.RetornoAutoparte(idautoparte);
+				ventadirecta.CargarAutopartePed(autoparte);
+				System.out.println("Ingrese cantidad de la autoparte");
+				int cantidad = sc.nextInt();
+				ventadirecta.CargarCantidadPed(cantidad);
+				System.out.println("Ingrese id de la autoparte, ingrese -1 para salir");
+				idautoparte = sc.nextInt();
+			
+			}
+			if (ventadirecta.disminuirStock()) {
+		        System.out.println("el monto total de la venta sera: " + ventadirecta.CobroTotal());
+		        cliente.CargarVenta(ventadirecta);
+		    } else {
+		        System.out.println("La operación no se completó debido a falta de stock.");
+		    }
+
 		}
-		pedido.disminuirStock();
 		
-		cliente.CargarPedido(pedido);
+		else {
+			System.out.println("La lista de pedidos disponibles para pasar a ventas es: ");
+			cliente.ListarPedidos();
+			
+			System.out.print("Ingrese id del pedido que pasara a venta: ");
+			int id = sc.nextInt();
+			
+			// Recuperar el pedido del cliente
+		    Pedido pedido = cliente.RetornoPedido(id);
+		    
+		    if (pedido != null) {
+		        // Convertir el pedido en una venta
+		        Venta venta = pedido.convertirAVenta();
+			
+		        // Agregar la venta a la lista de ventas del cliente
+		        cliente.CargarVenta(venta);
+
+		        System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
+		        
+		        System.out.println("el monto total es de: " + venta.CobroTotal());
+
+		    }else {
+				        System.out.println("El pedido con el ID ingresado no existe.");
+				    }
+			
+			
+			
+		}
+		}
+		
+		
 	}
 	
 	public static void cancelarPedido() {
@@ -499,14 +556,16 @@ public class Main {
 		int idPedido = sc.nextInt();
 		
 		Cliente cliente = negocio.RetornoCliente(idCliente);
-		VentaReserva pedido = (VentaReserva) cliente.RetornoPedido(idPedido);
+		Pedido pedido = cliente.RetornoPedido(idPedido);
+		
 		pedido.CancelarPedido();
 		
 		cliente.EliminarPedido(idPedido);
+		System.out.println("Se elimino correctamente el pedido");
 	}
 	
 	public static void listarPedidos() {
-		System.out.print("Ingresar el id del cliente: ");
+		System.out.print("Ingresar el id del cliente para listar sus pedidos: ");
 		int idCliente = sc.nextInt();
 		Cliente cliente = negocio.RetornoCliente(idCliente);
 		
