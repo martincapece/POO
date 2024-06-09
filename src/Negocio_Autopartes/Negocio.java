@@ -40,23 +40,26 @@ public class Negocio {
 				return usuario;
 			}
 		}
-		return null;
+		throw new UsuarioNoEncontradoExcepcion("Error: No se encontro ningun usuario con el ID: " + id);
 	}
 	
+	public void CargarUsuario(Usuario usuario) {
+		boolean existe = this.VerificarUsuario(usuario.getId());
+		
+		if (existe) {
+			throw new UsuarioExistenteExcepcion("Error: El usuario ya existe en el sistema.");
+		}
+		
+		usuarios.add(usuario);
+		if (usuario.getId() != 1) {
+			System.out.println("¡El usuario fue cargado en el sistema!");
+		}
+	}
 	
 	public void CargarCliente(Cliente cliente) {
 		clientes.add(cliente);
 		System.out.println("Se agrego al cliente a la lista");
 	}
-	
-	public void CargarUsuario(Usuario usuario) {
-		usuarios.add(usuario);
-		if (usuario.getId() != 1) {
-			System.out.println("¡El usuario fue cargado en el sistema!");	
-			System.out.println();
-		}
-	}
-	
 	
 	public void CargarAutoparte(Autoparte autoparte) {
 		boolean existe = this.VerificarAutoparte(autoparte.getId());
@@ -180,6 +183,18 @@ public class Negocio {
 		
 		for (Cliente cliente : clientes) {
 			if (cliente.getId() == id) {
+				return existe;
+			}
+		}
+		
+		return !existe;
+	}
+	
+	private boolean VerificarUsuario(int id) {
+		boolean existe = true;
+		
+		for (Usuario usuario : usuarios) {
+			if (usuario.getId() == id) {
 				return existe;
 			}
 		}

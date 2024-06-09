@@ -1,7 +1,9 @@
 package Ejecucion;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import Negocio_Autopartes.*;
+import Excepciones.*;
 
 public class Main {
 	private static Negocio negocio;
@@ -12,149 +14,204 @@ public class Main {
 		Usuario administrador= new Usuario(1, "administrador", "1234", "administrador@uade.edu.ar");
 		negocio.CargarUsuario(administrador);
 		String opcion = "";
-		String funcionalidad = "";	
+		int funcionalidad = 0;	
 		String opcionCliente = "";
 		String opcionPedido = "";
 		Usuario usuario = null;
+		boolean continuar = true;
 		
-		while (true) {
+		while (continuar) {
 			
 			if (usuario == null) {
 				usuario = iniciarSesion();
-				System.out.println("¡Bienvenido " + usuario.getUsuario() + "!");
+				System.out.println();
+				System.out.println("¡Bienvenido " + usuario + "!");
 			}
 			
-			System.out.println("1- Gestionar autopartes");
-			System.out.println("2- Agregar clientes");
-			System.out.println("3- Gestionar pedidos");
-			System.out.println("4- Gestionar ventas");
-			System.out.println("5- Salir");
-			System.out.print("Introduzca una opcion: ");
-			funcionalidad = sc.next();
-			
-			if(funcionalidad.equals("1")) {
-				do {
+			try {
+				System.out.println("1- Gestionar autopartes");
+				System.out.println("2- Agregar clientes");
+				System.out.println("3- Gestionar pedidos");
+				System.out.println("4- Gestionar ventas");
+				System.out.println("5- Cambiar usuario");
+				System.out.println("6- Salir");
+				System.out.print("Introduzca una opcion: ");
+				funcionalidad = sc.nextInt();
+				validarOpcion1(funcionalidad);
+				
+				switch (funcionalidad) {
+				case 1:
+					do {
+						System.out.println();
+						System.out.println("a- Agregar autoparte");
+						System.out.println("b- Eliminar autoparte");
+						System.out.println("c- Listar autopartes");
+						System.out.println("d- Modificar autoparte");
+						System.out.println("e- Modificar stock");
+						System.out.println("f- Salir");
+						System.out.print("Ingrese una opción: ");
+						opcion = sc.next();
+						System.out.println();
+						
+						if(opcion.equals("a")) {
+							agregarAutoparte();
+						}else if(opcion.equals("b")) {
+							bajaAutoparte();
+						}else if(opcion.equals("c")) {
+							listarAutoparte();
+						}else if(opcion.equals("d")){
+							modificarAutoparte();
+						}else if(opcion.equals("e")) {
+							modificarStock();
+						}
+					} while(!opcion.equals("f"));
+					break;
+				case 2:
+					do {
+						System.out.println();
+						System.out.println("a- Agregar un nuevo cliente");
+						System.out.println("b- Listar clientes");
+						System.out.println("c- Salir");
+						System.out.print("Ingrese una opción: ");
+						opcionCliente = sc.next();
+						System.out.println();
+						
+						if(opcionCliente.equals("a")) {
+							agregarCliente();
+						}else if(opcionCliente.equals("b")) {
+							listarCliente();
+						}
+					}while(!opcionCliente.equals("c"));
+					break;
+				case 3:
+					do {
+						System.out.println();
+						System.out.println("a- Iniciar pedido");
+						System.out.println("b- Cancelar pedido");
+						System.out.println("c- Listar pedidos");
+						System.out.println("d- Salir");
+						System.out.print("Ingrese una opción: ");
+						opcionPedido = sc.next();
+						System.out.println();
+						
+						if(opcionPedido.equals("a")) {
+							iniciarPedido();
+						}else if(opcionPedido.equals("b")) {
+							cancelarPedido();
+						}else if(opcionPedido.equals("c")) {
+							listarPedidos();
+						}
+					}while(!opcionPedido.equals("d"));
+					break;
+				case 4:
+					gestionarVentas();
+					break;
+				case 5:
+					usuario = null;
 					System.out.println();
-					System.out.println("a- Agregar autoparte");
-					System.out.println("b- Eliminar autoparte");
-					System.out.println("c- Listar autopartes");
-					System.out.println("d- Modificar autoparte");
-					System.out.println("e- Modificar stock");
-					System.out.println("f- Salir");
-					System.out.print("Ingrese una opción: ");
-					opcion = sc.next();
-					System.out.println();
-			
-					if(opcion.equals("a")) {
-						agregarAutoparte();
-					}else if(opcion.equals("b")) {
-						bajaAutoparte();
-					}else if(opcion.equals("c")) {
-						listarAutoparte();
-					}else if(opcion.equals("d")){
-						modificarAutoparte();
-					}else if(opcion.equals("e")) {
-						modificarStock();
-					}
-				} while(!opcion.equals("f"));
-			} else if(funcionalidad.equals("2")) {
-				do {
-					System.out.println();
-					System.out.println("a- Agregar un nuevo cliente");
-					System.out.println("b- Listar clientes");
-					System.out.println("c- Salir");
-					System.out.print("Ingrese una opción: ");
-					opcionCliente = sc.next();
-					System.out.println();
-					
-					if(opcionCliente.equals("a")) {
-						agregarCliente();
-					}else if(opcionCliente.equals("b")) {
-						listarCliente();
-					}
-				}while(!opcionCliente.equals("c"));
-			} else if(funcionalidad.equals("3")) {
-				do {
-					System.out.println();
-					System.out.println("a- Iniciar pedido");
-					System.out.println("b- Cancelar pedido");
-					System.out.println("c- Listar pedidos");
-					System.out.println("d- Salir");
-					System.out.print("Ingrese una opción: ");
-					opcionPedido = sc.next();
-					System.out.println();
-					
-					if(opcionPedido.equals("a")) {
-						iniciarPedido();
-					}else if(opcionPedido.equals("b")) {
-						cancelarPedido();
-					}else if(opcionPedido.equals("c")) {
-						listarPedidos();
-					}
-				}while(!opcionPedido.equals("d"));	
-			}else if(funcionalidad.equals("4")) {
-				gestionarVentas();
-			} else {break;}
-			
+					break;
+				case 6:
+					System.out.println("¡Hasta la proxima " + usuario + "!");
+					continuar = false;
+					break;
+				}
+			} catch (OpcionInvalidaExcepcion e) {
+				System.err.println(e.getMessage());
+				System.out.println();
+			} catch (InputMismatchException e) {
+				System.err.println("Error: No puede ingresar una cadena de caracteres");
+				sc.nextLine();
+				System.out.println();
+			}
 		}
-	
-	System.out.println("¡Hasta la proxima " + usuario + "!");	
 	}
 	
 	public static Usuario iniciarSesion() {
-		System.out.println("1- Registrarse");
-		System.out.println("2- Iniciar Sesion");
-		System.out.print("Seleccione una opcion: ");
-		int opcion = sc.nextInt();
-		if (opcion == 1) {
-			System.out.print("Ingresar id: ");
-			int id = sc.nextInt();
-			sc.nextLine();
+		try {
+			System.out.println("1- Registrarse");
+			System.out.println("2- Iniciar Sesion");
+			System.out.print("Seleccione una opcion: ");
+			int opcion = sc.nextInt();
+			boolean valido;
+			validarOpcion2(opcion);
 			
-			System.out.print("Ingresar nombre de usuario: ");
-			String username = sc.nextLine();
-			
-			System.out.print("Ingresar contraseña: ");
-			String contraseña = sc.next();
-			boolean estadoContraseña = validarContraseña(contraseña);
-			while (!estadoContraseña) {
-				System.out.println("La contraseña es invalida.");
-				System.out.print("Ingresar una contraseña valida: ");
-				contraseña = sc.next();
-				estadoContraseña = validarContraseña(contraseña);
-			}
-			
-			System.out.print("Ingresar email: ");
-			String email = sc.next();
-			boolean estadoEmail = validarEmail(email);
-			while (!estadoEmail) {
-				System.out.println("La contraseña es invalida.");
-				System.out.print("Ingresar una contraseña valida: ");
-				email = sc.next();
-				estadoEmail = validarContraseña(email);
-			}
-			
-			Usuario user = new Usuario(id, username, contraseña, email);
-			
-			negocio.CargarUsuario(user);
-			
-			return user;
-		} else if (opcion == 2) {
-			System.out.print("Ingresar id: ");
-			int Id = sc.nextInt();
-			
-			Usuario usuario = negocio.RetornoUsuario(Id);
-			if (usuario == null) {
-				System.out.println("No se encontro ningun usuario con el ID: " + Id);
-				iniciarSesion();
-			} else {
+			if (opcion == 1) {
+				int id = 0;
+				valido = false;
+				
+				while (!valido) {
+					try {
+						System.out.print("Ingresar id: ");
+						id = sc.nextInt();
+						numeroPositivo(id);
+						valido = true;
+					} catch (NumeroNegativoExcepcion e) {
+						System.err.println(e.getMessage());
+					}					
+				}
+				sc.nextLine();
+				
+				System.out.print("Ingresar nombre de usuario: ");
+				String username = sc.nextLine();
+				
+				valido = false;
+				String contraseña = "";
+				
+				while (!valido) {
+					try {
+						System.out.print("Ingresar contraseña: ");
+						contraseña = sc.next();
+						validarContraseña(contraseña);
+						valido = true;
+					} catch (LongitudInvalidaExcepcion e) {
+						System.err.println(e.getMessage());
+					} catch (CaracterEspecialExcepcion e) {
+						System.err.println(e.getMessage());
+					}
+				}
+				
+				valido = false;
+				String email = "";
+				while (!valido) {
+					try {
+						System.out.print("Ingresar email: ");
+						email = sc.next();
+						validarEmail(email);
+						valido = true;
+					} catch (EmailInvalidoExcepcion e) {
+						System.err.println(e.getMessage());
+					} catch (EmailVacioExcepcion e) {
+						System.err.println(e.getMessage());
+					} catch (DominioInvalidoExcepcion e) {
+						System.err.println(e.getMessage());
+					}
+				}
+				
+				Usuario user = new Usuario(id, username, contraseña, email);
+				
+				negocio.CargarUsuario(user);
+				
+				return user;
+			} else if (opcion == 2) {
+				System.out.print("Ingresar id: ");
+				int id = sc.nextInt();
+				Usuario usuario = negocio.RetornoUsuario(id);
 				return usuario;
 			}
-		} else {
-			System.out.println("La opcion ingresada no es valida.");
-			System.out.println();
-			iniciarSesion();
+			return null;	
+		} catch (OpcionInvalidaExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (InputMismatchException e) {
+			System.err.println("Error: No puede ingresar una cadena de caracteres");
+			sc.nextLine();
+		} catch (UsuarioExistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (UsuarioNoEncontradoExcepcion e) {
+			System.err.println(e.getMessage());
 		}
+		
+		System.out.println();
+		iniciarSesion();
 		return null;
 	}
 	
@@ -413,7 +470,7 @@ public class Main {
 		
 		System.out.print("Ingrese email del cliente: ");
 		String email = sc.nextLine();
-		boolean estado = validarEmail(email);
+		/*boolean estado = validarEmail(email);
 		while (!estado) {
 			System.out.println("El email no es valido.");
 			System.out.print("Introduzca un email valido: ");
@@ -422,7 +479,7 @@ public class Main {
 		}
 		
 		Cliente cliente = new Cliente(id,nombre,direccion,telefono,localidad,provincia,email);
-		negocio.AgregarCliente(cliente);
+		negocio.AgregarCliente(cliente);*/
 	}
 	
 	public static void listarCliente() {
@@ -615,62 +672,41 @@ public class Main {
 		return !valido;
 	}
 	
-	public static boolean validarContraseña(String contraseña){
-		boolean valido = true;
-		
-		boolean resultado = contieneCaracterEspecial(contraseña);
-		if ((contraseña.length() < 8 || contraseña.length() > 32) || resultado) {
-			return !valido;
+	public static void validarContraseña(String contraseña){
+		if (contraseña.length() < 8 || contraseña.length() > 32) {
+			throw new LongitudInvalidaExcepcion("Error: La contraseña debe contener entre 8 y 32 caracteres");
 		}
-		
-		return valido;
+		contieneCaracterEspecial(contraseña);
 	}
 	
-	public static boolean contieneCaracterEspecial(String cadena) {
-		boolean contiene = true;
+	public static void contieneCaracterEspecial(String cadena) {
 		char[] caracteres = cadena.toCharArray();
 		
 		for (char caracter : caracteres) {
 			if (!Character.isLetterOrDigit(caracter)) {
-				return contiene;
+				throw new CaracterEspecialExcepcion("Error: La contraseña no puede tener caracteres especiales");
 			}
 		}
-		
-		return !contiene;
 	}
 	
-	public static boolean validarEmail(String email) {
-		boolean valido = true;
-		
-		String[] partes = email.split("@");
-
-		if (email == null || !email.contains("@") || !email.contains(".") || partes.length != 2) {
-			return !valido;
+	public static void validarEmail(String email) {
+		if (email == null || !email.contains("@") || !email.contains(".")) {
+			throw new EmailInvalidoExcepcion("Error: El email debe tener como minimo un '@' y un dominio con '.'.");
 		}
 		
+		String[] partes = email.split("@");
 		String direccionCorreo = partes[0];
 		String servidor = partes[1];	
 		String[] partesServidor = servidor.split("\\.");
 		
-		if ((direccionCorreo.isEmpty() && servidor.isEmpty()) || (partesServidor.length < 1 || partesServidor.length > 3)|| contieneNumero(servidor)) {
-			return !valido;
+		if (direccionCorreo.isEmpty() && servidor.isEmpty()) {
+			throw new EmailVacioExcepcion("Error: El email no puede estar vacio.");
 		}
 		
-		return valido;
-	}
-	
-	public static boolean contieneNumero(String cadena) {
-		boolean contiene = true;
-		
-		for (char c : cadena.toCharArray()) {
-			if (Character.isDigit(c)) {
-				return contiene;
-			}
+		if (partesServidor.length < 1 || partesServidor.length > 3) {
+			throw new DominioInvalidoExcepcion("Error: Se espera que el dominio tenga entre 1 y 3 subdominios separados por puntos");
 		}
-		
-		return !contiene;
 	}
-	
 	
 	public static boolean contieneGuion(String cadena) {
 		boolean contiene = true;
@@ -683,6 +719,24 @@ public class Main {
 			}
 		}
 		return !contiene;
+	}
+	
+	public static void validarOpcion1(int numero) {
+		if (numero < 1 || numero > 6) {
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. El numero debe ser 1, 2, 3, 4, 5 o 6.");
+		}
+	}
+	
+	public static void validarOpcion2(int numero) {
+		if (numero < 1 || numero > 2) {
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. El numero debe ser 1 o 2.");
+		}
+	}
+	
+	public static void numeroPositivo(int numero) {
+		if (numero < 0) {
+			throw new NumeroNegativoExcepcion("Error: El numero debe ser positivo.");
+		}
 	}
 
 }
