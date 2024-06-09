@@ -58,25 +58,6 @@ public class Pedido {
 		this.montoTotal = montoTotal;
 	}
 	
-	public boolean disminuirStock() {
-		
-		
-	    for (int i = 0; i < autopartepedido.size(); i++) {
-	        if (verificarStock(autopartepedido.get(i), autoparteCantidad.get(i))) {
-	            autopartepedido.get(i).restarStock(autoparteCantidad.get(i));
-	        } else {
-	            System.out.println("No había suficiente stock para: " + autopartepedido.get(i).getModelo());
-	            return false;
-	        }
-	    }
-	    return true;
-	}
-
-
-	public boolean verificarStock(Autoparte autoparte, int cant) {
-	    return autoparte.getStock() >= cant;
-	}
-	
 	public void CancelarPedido() {
 		for(int i = 0; i < autopartepedido.size(); i++) {
 				autopartepedido.get(i).sumarStock(autoparteCantidad.get(i));
@@ -85,28 +66,58 @@ public class Pedido {
 		System.out.println("Se devolvio el stock a su origen");
 	}
 	
-	public Venta convertirAVenta() {
-	    // Solicitar método de pago
-	    System.out.print("Ingrese metodo de pago: td para tarjeta de debito, tc para tarjeta de credito, ef para efectivo: ");
-	    String metodopago = sc.next();
-
-	    // Solicitar cuotas si el método de pago es "td" o "tc"
-	    int cuotas;
-	    if (metodopago.equals("td") || metodopago.equals("tc")) {
-	        System.out.print("Ingrese cuotas a pagar 2 3 o 6: ");
-	        cuotas = sc.nextInt();
-	    } else {
-	        cuotas = 1;
+	public boolean DisminuirStock() {
+	    for (int i = 0; i < autopartepedido.size(); i++) {
+	    	Autoparte autoparte = autopartepedido.get(i);
+	    	int cantidad = autoparteCantidad.get(i);
+	    	
+	        if (VerificarStock(autoparte, cantidad)) {
+	            autoparte.RestarStock(cantidad);
+	        } else {
+	            System.out.println("No había suficiente stock para: " + autoparte.getModelo());
+	            return false;
+	        }
 	    }
+	    return true;
+	}
 
-	    // Crear la venta con los datos ingresados por el usuario
-	    Venta venta = new VentaReserva(this.id, this.fecha, this.montoTotal, metodopago, cuotas);
 
-	    // Cargar las autopartes y cantidades a la venta
+	private boolean VerificarStock(Autoparte autoparte, int cant) {
+	    return (autoparte.getStock() >= cant);
+	}
+	
+	public Venta convertirAVenta() {
+		System.out.println("Opcion 'tc' para tarjeta de credito.");
+		System.out.println("Opcion 'td' para tarjeta de debito.");
+		System.out.println("Opcion 'ef' para efectivo.");
+		System.out.print("Ingrese metodo de pago: ");
+		String metodopago = sc.nextLine();
+
+		Venta venta = null;
+		
+		switch (metodopago) {
+		case "tc":
+			System.out.print("Ingrese cuotas a pagar (2, 3 o 6): ");
+			int cuotas = sc.nextInt();
+			venta = new VentaConCredito(this.id, this.fecha, this.montoTotal, cuotas);
+			break;
+		case "td":
+			venta = new VentaConDebito(id, fecha, this.montoTotal);
+			break;
+		case "ef":
+			venta = new VentaConDebito(id, fecha, this.montoTotal);
+			break;
+		default:
+			System.err.println("Metodo de pago no reconocido.");
+			convertirAVenta();
+			break;
+		}
+		
 	    for (int i = 0; i < autopartepedido.size(); i++) {
 	        venta.CargarAutopartePed(autopartepedido.get(i));
 	        venta.CargarCantidadPed(autoparteCantidad.get(i));
 	    }
+	    
 	    return venta;
 	}
 

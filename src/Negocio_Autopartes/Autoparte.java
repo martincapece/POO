@@ -117,13 +117,13 @@ public class Autoparte {
 	
 	public void sumarStock(int cantidad) {
 		this.stock += cantidad;
-		System.out.print("Se agrego correctamente, tu stock actual es de: " + this.stock + this.modelo+"\n");
+		System.out.print("Se agrego correctamente, tu stock actual es de: " + this.stock + ". Modelo: " + this.modelo+"\n");
 		
 	}
 	
-	public void restarStock(int cantidad) {
+	public void RestarStock(int cantidad) {
 		this.stock -= cantidad;
-		System.out.print("Se quito correctamente, tu stock actual es de: " + this.stock + this.modelo+ "\n");
+		System.out.print("Se quito correctamente, tu stock actual es de: " + this.stock + ". Modelo: " + this.modelo+ "\n");
 		
 	}
 	

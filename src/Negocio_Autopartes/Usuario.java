@@ -44,4 +44,8 @@ public class Usuario {
 	public String getUsuario() {
 		return this.usuario;
 	}
+	
+	public String toString() {
+		return this.usuario;
+	}
 }

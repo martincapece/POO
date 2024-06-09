@@ -1,6 +1,7 @@
 package Negocio_Autopartes;
 
 import java.util.ArrayList;
+import Excepciones.*;
 
 public class Negocio {
 	ArrayList<Autoparte> autopartes;
@@ -95,18 +96,17 @@ public class Negocio {
 	        }
 	    }
 	}
-
+	
 	public void ListarAutopartes() {
         if (autopartes.isEmpty()) {
             System.out.println("No hay autopartes en la lista.");
         } else {
             for (Autoparte autoparte : autopartes) {
-                System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo()+ ", Precio: " + autoparte.getPrecio() +" Cantidad de Stock: " +autoparte.getStock());
-                if (autoparte.getStock()<autoparte.getStockMinimo()) {
+            	System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo()+ ", Precio: " + autoparte.getPrecio() +" Cantidad de Stock: " +autoparte.getStock());
+                if (autoparte.getStock() < autoparte.getStockMinimo()) {
                 	System.out.println("EL STOCK ESTA POR DEBAJO DEL MINIMO. REPONER STOCK");
                 }
             }
-            
         }
     }
 	
@@ -131,7 +131,7 @@ public class Negocio {
 		boolean posible = this.VerificarStock(autoparte, cantidad);
 		
 		if (posible) {
-			autoparte.restarStock(cantidad);
+			autoparte.RestarStock(cantidad);
 			System.out.println("¡El stock fue decrementado correctamente!");
 		} else {
 			System.out.println("No es posible restar esa cantidad de stock.");
