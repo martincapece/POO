@@ -22,7 +22,7 @@ public class Negocio {
 				return autoparte;
 			}
 		}
-		return null;
+		throw new ObjetoInexistenteExcepcion("Error: No se encontro ninguna autoparte con el ID: " + id);
 	}
 	
 	public Cliente RetornoCliente(int id) {
@@ -47,7 +47,7 @@ public class Negocio {
 		boolean existe = this.VerificarUsuario(usuario.getId());
 		
 		if (existe) {
-			throw new UsuarioExistenteExcepcion("Error: El usuario ya existe en el sistema.");
+			throw new ObjetoExistenteExcepcion("Error: El usuario ya existe en el sistema.");
 		}
 		
 		usuarios.add(usuario);
@@ -72,11 +72,14 @@ public class Negocio {
 		}
 	}
 	
-	public void MostrarIdAutos() {
-		System.out.println("Listado de IDs disponibles a eliminar");
-		for(Autoparte autoparte:autopartes) {
-			System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo());
-			
+	public void MostrarIdAutopartes() {
+		if (autopartes.isEmpty()) {
+			throw new ListaVaciaExcepcion("Error: Actualmente no hay autopartes cargadas.");
+		} else {
+			System.out.println("Listado de IDs disponibles a eliminar");
+			for (Autoparte autoparte : autopartes) {
+				System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo());	
+			}			
 		}
 	}
 	
@@ -84,7 +87,7 @@ public class Negocio {
 	    boolean existe = this.VerificarAutoparte(id);
 	    
 	    if (!existe) {
-	        System.out.println("La autoparte no existe");
+	        throw new ObjetoInexistenteExcepcion("Error: La autoparte con ID: " + id + " no existe.");
 	    } else {
 	        Autoparte elegida = null;
 	        for (Autoparte autoparte : autopartes) {
@@ -102,7 +105,7 @@ public class Negocio {
 	
 	public void ListarAutopartes() {
         if (autopartes.isEmpty()) {
-            System.out.println("No hay autopartes en la lista.");
+            throw new ListaVaciaExcepcion("Error: Actualmente no hay autopartes cargadas.");
         } else {
             for (Autoparte autoparte : autopartes) {
             	System.out.println("ID: " + autoparte.getId() +", Modelo: " + autoparte.getModelo()+ ", Precio: " + autoparte.getPrecio() +" Cantidad de Stock: " +autoparte.getStock());
@@ -202,7 +205,9 @@ public class Negocio {
 		return !existe;
 	}
 	
-	public boolean CorroborarExistencia(int id) {
-		return this.VerificarAutoparte(id);
+	public void CorroborarExistencia(int id) {
+		if (this.VerificarAutoparte(id)) {
+			throw new IdExistenteExcepcion("Error: El id proporcionado ya existe en el sistema.");
+		}
 	}
 }

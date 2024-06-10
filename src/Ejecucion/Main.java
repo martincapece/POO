@@ -42,27 +42,39 @@ public class Main {
 				switch (funcionalidad) {
 				case 1:
 					do {
-						System.out.println();
-						System.out.println("a- Agregar autoparte");
-						System.out.println("b- Eliminar autoparte");
-						System.out.println("c- Listar autopartes");
-						System.out.println("d- Modificar autoparte");
-						System.out.println("e- Modificar stock");
-						System.out.println("f- Salir");
-						System.out.print("Ingrese una opción: ");
-						opcion = sc.next();
-						System.out.println();
-						
-						if(opcion.equals("a")) {
-							agregarAutoparte();
-						}else if(opcion.equals("b")) {
-							bajaAutoparte();
-						}else if(opcion.equals("c")) {
-							listarAutoparte();
-						}else if(opcion.equals("d")){
-							modificarAutoparte();
-						}else if(opcion.equals("e")) {
-							modificarStock();
+						try {
+							System.out.println();
+							System.out.println("a- Agregar autoparte");
+							System.out.println("b- Eliminar autoparte");
+							System.out.println("c- Listar autopartes");
+							System.out.println("d- Modificar autoparte");
+							System.out.println("e- Modificar stock");
+							System.out.println("f- Salir");
+							
+							try {
+								System.out.print("Ingrese una opción: ");
+								opcion = sc.next();
+								validarOpcion3(opcion);
+							} catch (OpcionInvalidaExcepcion e) {
+								System.err.print(e.getMessage());
+								continue;
+							}
+							
+							System.out.println();
+							
+							if(opcion.equals("a")) {
+								agregarAutoparte();
+							}else if(opcion.equals("b")) {
+								bajaAutoparte();
+							}else if(opcion.equals("c")) {
+								listarAutoparte();
+							}else if(opcion.equals("d")) {
+								modificarAutoparte();
+							}else if(opcion.equals("e")) {
+								modificarStock();
+							}
+						} catch (ListaVaciaExcepcion e) {
+							System.err.println(e.getMessage());
 						}
 					} while(!opcion.equals("f"));
 					break;
@@ -143,7 +155,7 @@ public class Main {
 					try {
 						System.out.print("Ingresar id: ");
 						id = sc.nextInt();
-						numeroPositivo(id);
+						validarPositivo(id);
 						valido = true;
 					} catch (NumeroNegativoExcepcion e) {
 						System.err.println(e.getMessage());
@@ -161,7 +173,7 @@ public class Main {
 					try {
 						System.out.print("Ingresar contraseña: ");
 						contraseña = sc.next();
-						validarContraseña(contraseña);
+						validarLongitudContraseña(contraseña);
 						valido = true;
 					} catch (LongitudInvalidaExcepcion e) {
 						System.err.println(e.getMessage());
@@ -204,7 +216,7 @@ public class Main {
 		} catch (InputMismatchException e) {
 			System.err.println("Error: No puede ingresar una cadena de caracteres");
 			sc.nextLine();
-		} catch (UsuarioExistenteExcepcion e) {
+		} catch (ObjetoExistenteExcepcion e) {
 			System.err.println(e.getMessage());
 		} catch (UsuarioNoEncontradoExcepcion e) {
 			System.err.println(e.getMessage());
@@ -216,189 +228,231 @@ public class Main {
 	}
 	
 	public static void agregarAutoparte() {
-		System.out.print("Ingresar id de la autoparte: ");
-		int id = sc.nextInt();
-		sc.nextLine();
-		
-		System.out.print("Ingresar denominacion: ");
-		String denominacion = sc.nextLine();
-		
-		System.out.print("Ingresar descripcion: ");
-		String descripcion = sc.nextLine();
-		
-		System.out.print("Ingresar categoria: ");
-		String categoria = sc.nextLine();
-		
-		boolean estadoCat = valirdarLongitud(categoria);
-		while (!estadoCat) {
-			System.out.println("La categoria debe contener menos de 50 caracteres.");
-			System.out.println("Ingrese nuevamente la categoria: ");
-			categoria = sc.nextLine();
-			estadoCat = valirdarLongitud(categoria);
+		boolean valido = false;
+		try {
+			int id = 0;
+			while (!valido) {
+				try {
+					System.out.print("Ingresar id de la autoparte: ");
+					id = sc.nextInt();
+					sc.nextLine();						
+					validarPositivo(id);
+					valido = true;
+				} catch (NumeroNegativoExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			System.out.print("Ingresar denominacion: ");
+			String denominacion = sc.nextLine();
+			
+			System.out.print("Ingresar descripcion: ");
+			String descripcion = sc.nextLine();
+			
+			String categoria = "";
+			valido = false;
+			while (!valido) {
+				try {
+					System.out.print("Ingresar categoria: ");
+					categoria = sc.nextLine();
+					validarLongtud(categoria);
+					valido = true;
+				} catch (LongitudInvalidaExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			String marca = "";
+			valido = false;
+			while (!valido) {
+				try {
+					System.out.print("Ingresar marca: ");
+					marca = sc.nextLine();
+					validarLongtud(marca);
+					valido = true;
+				} catch (LongitudInvalidaExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			System.out.print("Ingresar vehiculo: ");
+			String vehiculo = sc.nextLine();
+			
+			System.out.print("Ingresar modelo: ");
+			String modelo = sc.nextLine();
+			
+			System.out.print("Ingresar precio: $");
+			double precio = sc.nextDouble();
+			sc.nextLine();
+			
+			System.out.print("Ingresar stock: ");
+			int stock = sc.nextInt();
+			sc.nextLine();
+			
+			System.out.print("Ingresar stock minimo: ");
+			int stockMinimo = sc.nextInt();
+			sc.nextLine();
+			
+			System.out.print("Ingresar enlace: ");
+			String enlace = sc.nextLine();
+			
+			Autoparte autoparte = new Autoparte(id, denominacion, descripcion, categoria, marca, vehiculo, modelo, precio, stock, stockMinimo, enlace);
+			
+			negocio.CargarAutoparte(autoparte);
+		} catch (InputMismatchException e) {
+			System.err.println("Error: No puede ingresar una cadena de caracteres");
+			sc.nextLine();
 		}
-		
-		System.out.print("Ingresar marca: ");
-		String marca = sc.nextLine();
-		
-		boolean estadoMar = valirdarLongitud(marca);
-		while (!estadoMar) {
-			System.out.println("La categoria debe contener menos de 50 caracteres.");
-			System.out.println("Ingrese nuevamente la categoria: ");
-			marca = sc.nextLine();
-			estadoMar = valirdarLongitud(marca);
-		}
-		
-		System.out.print("Ingresar vehiculo: ");
-		String vehiculo = sc.nextLine();
-		
-		System.out.print("Ingresar modelo: ");
-		String modelo = sc.nextLine();
-		
-		System.out.print("Ingresar precio: $");
-		double precio = sc.nextDouble();
-		sc.nextLine();
-		
-		System.out.print("Ingresar stock: ");
-		int stock = sc.nextInt();
-		sc.nextLine();
-		
-		System.out.print("Ingresar stock minimo: ");
-		int stockMinimo = sc.nextInt();
-		sc.nextLine();
-		
-		System.out.print("Ingresar enlace: ");
-		String enlace = sc.nextLine();
-		
-		Autoparte autoparte = new Autoparte(id, denominacion, descripcion, categoria, marca, vehiculo, modelo, precio, stock, stockMinimo, enlace);
-		
-		negocio.CargarAutoparte(autoparte);
 	}
 	
-	public static void modificarAutoparte() {		
-		System.out.print("Indicar ID de la autoparte a modificar: ");
-		int idAutoparte = sc.nextInt();
-		
-		Autoparte autoparte = negocio.RetornoAutoparte(idAutoparte);
-		
-		System.out.println("1- Id");
-		System.out.println("2- Denominacion");
-		System.out.println("3- Descripcion");
-		System.out.println("4- Categoria");
-		System.out.println("5- Marca");
-		System.out.println("6- Vehiculo");
-		System.out.println("7- Modelo");
-		System.out.println("8- Precio");
-		System.out.println("9- Stock");
-		System.out.println("10- Stock Minimo");
-		System.out.println("11- Enlace");
-		System.out.print("Inidicar que desea modificar: ");
-		String tipo = sc.next();
-		
-		 
-		
-		switch (tipo) {
-		case "1":
-			System.out.print("Indicar nuevo id: ");
-			int nuevoId = sc.nextInt();
-			
-			do {
-				System.out.println("Ese id ya esta siendo utilizado por otra autoparte.");
-				System.out.print("Intente con otro id: ");
-				nuevoId = sc.nextInt();
-			} while (negocio.CorroborarExistencia(nuevoId));
-			
-			autoparte.setId(nuevoId);
-			break;
-		case "2":
-			System.out.print("Ingresar nueva denominacion: ");
-			String nuevaDenominacion = sc.next();
-			
-			autoparte.setDenominacion(nuevaDenominacion);
-			break;
-		case "3":
-			System.out.print("Ingresar descripcion: ");
-			String nuevaDescripcion = sc.next();
-			
-			autoparte.setDescripcion(nuevaDescripcion);
-			break;
-		case "4":
-			System.out.print("Ingresar categoria: ");
-			String nuevaCategoria = sc.next();
-			
-			boolean estadoNuevaCat = valirdarLongitud(nuevaCategoria);
-			while (!estadoNuevaCat) {
-				System.out.println("La categoria debe contener menos de 50 caracteres.");
-				System.out.println("Ingrese nuevamente la categoria: ");
-				nuevaCategoria = sc.nextLine();
-				estadoNuevaCat = valirdarLongitud(nuevaCategoria);
-			}
-			
-			autoparte.setCategoria(nuevaCategoria);
-			break;
-		case "5":
-			System.out.print("Ingresar marca: ");
-			String nuevaMarca = sc.next();
-			
-			boolean estadoNuevaMar= valirdarLongitud(nuevaMarca);
-			while (!estadoNuevaMar) {
-				System.out.println("La categoria debe contener menos de 50 caracteres.");
-				System.out.println("Ingrese nuevamente la categoria: ");
-				nuevaMarca = sc.nextLine();
-				estadoNuevaMar = valirdarLongitud(nuevaMarca);
-			}
-			
-			autoparte.setMarca(nuevaMarca);
-			break;
-		case "6":
-			System.out.print("Ingresar vehiculo: ");
-			String nuevoVehiculo = sc.next();
-			
-			autoparte.setVehiculo(nuevoVehiculo);
-			break;
-		case "7":
-			System.out.print("Ingresar modelo: ");
-			String nuevoModelo = sc.next();
-			
-			autoparte.setModelo(nuevoModelo);
-			break;
-		case "8":
-			System.out.print("Ingresar precio: $");
-			double nuevoPrecio = sc.nextDouble();
-			
-			autoparte.setPrecio(nuevoPrecio);
-			break;
-		case "9":
-			System.out.print("Ingresar stock: ");
-			int nuevoStock = sc.nextInt();
-			
-			autoparte.setStock(nuevoStock);
-			break;
-		case "10":
-			System.out.print("Ingresar stock minimo: ");
-			int nuevoStockMinimo = sc.nextInt();
-			
-			autoparte.setStockMinimo(nuevoStockMinimo);
-			break;
-		case "11":
-			System.out.print("Ingresar enlace: ");
-			String nuevoEnlace = sc.next();
-			
-			autoparte.setEnlace(nuevoEnlace);
-			break;
+	public static void bajaAutoparte() {
+		try {
+			negocio.MostrarIdAutopartes();
+			System.out.print("Ingresar el id de la autoparte a eliminar: ");
+			int id = sc.nextInt();	
+			negocio.EliminarAutoparte(id);			
+		} catch (InputMismatchException e) {
+			System.err.println("Error: No puede ingresar una cadena de caracteres");
+			sc.nextLine();
+			System.out.println();
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
 		}
-		System.out.print("¡El cambio fue aplicado con exito!");
-		
 	}
 	
 	public static void listarAutoparte() {
-		negocio.ListarAutopartes();
+		negocio.ListarAutopartes();			
 	}
-
-	public static void bajaAutoparte() {
-		negocio.MostrarIdAutos();
-		System.out.print("Ingresar el id de la autoparte a eliminar: ");
-		int id = sc.nextInt();	
-		negocio.EliminarAutoparte(id);
+	
+	public static void modificarAutoparte() {		
+		try {
+			System.out.print("Indicar ID de la autoparte a modificar: ");
+			int idAutoparte = sc.nextInt();
+			
+			Autoparte autoparte = negocio.RetornoAutoparte(idAutoparte);
+			
+			System.out.println("1- Id");
+			System.out.println("2- Denominacion");
+			System.out.println("3- Descripcion");
+			System.out.println("4- Categoria");
+			System.out.println("5- Marca");
+			System.out.println("6- Vehiculo");
+			System.out.println("7- Modelo");
+			System.out.println("8- Precio");
+			System.out.println("9- Stock");
+			System.out.println("10- Stock Minimo");
+			System.out.println("11- Enlace");
+			
+			boolean valido = false;
+			int tipo = 0;
+			while (!valido) {
+				try {
+					System.out.print("Inidicar que desea modificar: ");
+					tipo = sc.nextInt();
+					validarOpcion4(tipo);
+					valido = true;
+				} catch (OpcionInvalidaExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			switch (tipo) {
+			case 1:
+				valido = false;
+				while (!valido) {
+					try {
+						System.out.print("Indicar nuevo id: ");
+						int nuevoId = sc.nextInt();
+						negocio.CorroborarExistencia(nuevoId);
+						autoparte.setId(nuevoId);
+						valido = true;
+					} catch (IdExistenteExcepcion e) {
+						System.err.println(e.getMessage());
+					}
+				}
+				break;
+			case 2:
+				System.out.print("Ingresar nueva denominacion: ");
+				String nuevaDenominacion = sc.next();
+				
+				autoparte.setDenominacion(nuevaDenominacion);
+				break;
+			case 3:
+				System.out.print("Ingresar descripcion: ");
+				String nuevaDescripcion = sc.next();
+				
+				autoparte.setDescripcion(nuevaDescripcion);
+				break;
+			case 4:
+				valido = false;
+				while (!valido) {
+					try {
+						System.out.print("Ingresar categoria: ");
+						String nuevaCategoria = sc.next();
+						validarLongtud(nuevaCategoria);
+						autoparte.setCategoria(nuevaCategoria);
+						valido = true;
+					} catch (LongitudInvalidaExcepcion e) {
+						System.err.println(e.getMessage());
+					}
+				}
+				break;
+			case 5:
+				valido = false;
+				while (!valido) {
+					try {
+						System.out.print("Ingresar marca: ");
+						String nuevaMarca = sc.next();
+						validarLongtud(nuevaMarca);
+						autoparte.setMarca(nuevaMarca);
+						valido = true;
+					} catch (LongitudInvalidaExcepcion e) {
+						System.err.println(e.getMessage());
+					}
+				}
+				break;
+			case 6:
+				System.out.print("Ingresar vehiculo: ");
+				String nuevoVehiculo = sc.next();
+				
+				autoparte.setVehiculo(nuevoVehiculo);
+				break;
+			case 7:
+				System.out.print("Ingresar modelo: ");
+				String nuevoModelo = sc.next();
+				
+				autoparte.setModelo(nuevoModelo);
+				break;
+			case 8:
+				System.out.print("Ingresar precio: $");
+				double nuevoPrecio = sc.nextDouble();
+				
+				autoparte.setPrecio(nuevoPrecio);
+				break;
+			case 9:
+				System.out.print("Ingresar stock: ");
+				int nuevoStock = sc.nextInt();
+				
+				autoparte.setStock(nuevoStock);
+				break;
+			case 10:
+				System.out.print("Ingresar stock minimo: ");
+				int nuevoStockMinimo = sc.nextInt();
+				
+				autoparte.setStockMinimo(nuevoStockMinimo);
+				break;
+			case 11:
+				System.out.print("Ingresar enlace: ");
+				String nuevoEnlace = sc.next();
+				
+				autoparte.setEnlace(nuevoEnlace);
+				break;
+			}
+			System.out.print("¡El cambio fue aplicado con exito!");
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		}
+		
 	}
 	
 	public static void modificarStock() {
@@ -492,8 +546,8 @@ public class Main {
 		Cliente cliente = negocio.RetornoCliente(idCliente);
 		
 		cliente.ListarPedidos();
-	}
-
+	}	
+	
 	
 	public static void iniciarPedido() {
 	    System.out.print("Ingrese id del cliente para cargarle su pedido: ");
@@ -660,16 +714,18 @@ public class Main {
 		
 		cliente.EliminarPedido(idPedido);
 		System.out.println("Se elimino correctamente el pedido");
-	}
-		
-	public static boolean valirdarLongitud(String cadena) {
-		boolean valido = true;
-		
-		if (cadena.length() >= 1 && cadena.length() <= 50) {
-			return valido;
+	}		
+	
+	public static void validarLongtud(String cadena) {
+		if (cadena.length() < 1 || cadena.length() > 50) {
+			throw new LongitudInvalidaExcepcion("Error: Debe contener entre 1 y 50 caracteres");
 		}
-		
-		return !valido;
+	}
+	
+	public static void validarLongitudContraseña(String contra) {
+		if (contra.length() < 8 || contra.length() > 32) {
+			throw new LongitudInvalidaExcepcion("Error: La contraseña debe contener entre 8 y 32 caracteres");
+		}
 	}
 	
 	public static void validarContraseña(String contraseña){
@@ -733,7 +789,19 @@ public class Main {
 		}
 	}
 	
-	public static void numeroPositivo(int numero) {
+	public static void validarOpcion3(String letra) {
+		if (!letra.equals("a") && !letra.equals("b") && !letra.equals("c") && !letra.equals("d") && !letra.equals("e") && !letra.equals("f")) {
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b', 'c', 'd', 'e o 'f'.");
+		}
+	}
+	
+	public static void validarOpcion4(int numero) {
+		if (!(numero == 1) && !(numero == 2) && !(numero == 3) && !(numero == 4) && !(numero == 5) && !(numero == 6) && !(numero == 7) && !(numero == 8) && !(numero == 9) && !(numero == 10) && !(numero == 11)){
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. El numero debe ser 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 u 11.");
+		}
+	}
+	
+	public static void validarPositivo(int numero) {
 		if (numero < 0) {
 			throw new NumeroNegativoExcepcion("Error: El numero debe ser positivo.");
 		}
