@@ -68,7 +68,7 @@ public class Negocio {
 			autopartes.add(autoparte);
 			System.out.println("¡La autoparte fue cargada con exito!");
 		} else {
-			System.out.println("La autoparte ya existe");
+			throw new ObjetoExistenteExcepcion("Error: La autoparte ya existe en el sistema.");
 		}
 	}
 	
@@ -140,7 +140,7 @@ public class Negocio {
 			autoparte.RestarStock(cantidad);
 			System.out.println("¡El stock fue decrementado correctamente!");
 		} else {
-			System.out.println("No es posible restar esa cantidad de stock.");
+			throw new AccionImposibleExcepcion("Error: No puede quitar esa cantidad de stock. Stock actual: " + autoparte.getStock());
 		}
 		
 	}

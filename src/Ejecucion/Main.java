@@ -456,39 +456,64 @@ public class Main {
 	}
 	
 	public static void modificarStock() {
-		int id = 0;
-		int cantidad = 0;
-		System.out.println("1- Cargar stock");
-		System.out.println("2- ELiminar stock");
-		System.out.print("Ingrese la opcion que desee: ");
-		int modificacion = sc.nextInt();
-		
-		switch (modificacion) {
-		case 1:
-			System.out.print("Ingresar el id de la autoparte para cargar stock: ");
-			id = sc.nextInt();	
+		try {
+			int id = 0;
+			int cantidad = 0;
+			int modificacion = 0;
+			boolean valido = false;
+			System.out.println("1- Cargar stock");
+			System.out.println("2- ELiminar stock");
 			
-			System.out.print("Ingresar la cantidad que desea agregar: ");
-			cantidad = sc.nextInt();	
+			while (!valido) {
+				try {
+					System.out.print("Ingrese la opcion que desee: ");
+					modificacion = sc.nextInt();
+					validarOpcion2(modificacion);
+					valido = true;
+				} catch (OpcionInvalidaExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
 			
-			negocio.AgregarStock(id,cantidad);
-			break;
-		case 2:
-			System.out.print("Ingresar el id de la autoparte para eliminar stock: ");
-			id = sc.nextInt();	
-			
-			System.out.print("Ingresar la cantidad que desea eliminar: ");
-			cantidad = sc.nextInt();
-			
-			negocio.QuitarStock(id,cantidad);
-			break;
-		default:
-			System.out.println("Debe ingresar una de las dos opciones.");
-			modificarStock();
+			switch (modificacion) {
+			case 1:
+				System.out.print("Ingresar el id de la autoparte para cargar stock: ");
+				id = sc.nextInt();	
+				
+				valido = false;
+				while (!valido) {
+					try {
+						System.out.print("Ingresar la cantidad que desea agregar: ");
+						cantidad = sc.nextInt();
+						validarPositivo(cantidad);
+						valido = true;
+					} catch (NumeroNegativoExcepcion e) {
+						System.err.println(e.getMessage());
+					}
+				}
+				
+				negocio.AgregarStock(id,cantidad);
+				break;
+			case 2:
+				System.out.print("Ingresar el id de la autoparte para eliminar stock: ");
+				id = sc.nextInt();	
+				
+				System.out.print("Ingresar la cantidad que desea eliminar: ");
+				cantidad = sc.nextInt();
+				
+				negocio.QuitarStock(id,cantidad);
+				break;
+			} 
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (AccionImposibleExcepcion e) {
+			System.err.println(e.getMessage());
 		}
+		
 	}
 	
 	public static void agregarCliente() {
+		/*
 		System.out.print("Ingrese id del cliente: ");
 		int id = sc.nextInt();
 		sc.nextLine();
