@@ -118,7 +118,7 @@ public class Negocio {
 	
 	public void ListarClientes() {
         if (clientes.isEmpty()) {
-            System.out.println("No hay clientes en el sistema.");
+            throw new ListaVaciaExcepcion("Error: Actualmente no hay clientes en el sistema.");
         } else {
             for (Cliente cliente : clientes) {
                 System.out.println("ID: " + cliente.getId() + ", Nombre: " + cliente.getNombre() + ", e-mail: " + cliente.getEmail());
@@ -152,7 +152,7 @@ public class Negocio {
 			clientes.add(nuevoCliente);
 			System.out.println("¡El cliente fue cargado correctamente!");
 		} else {
-			System.out.println("El cliente ya se encuentra cargado en el sistema.");
+			throw new ObjetoExistenteExcepcion("Error: El cliente ya se encuentra cargado en el sistema");
 		}
 	}
 	

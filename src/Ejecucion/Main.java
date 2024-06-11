@@ -79,21 +79,30 @@ public class Main {
 					} while(!opcion.equals("f"));
 					break;
 				case 2:
-					do {
+					try {
+						do {
+							System.out.println();
+							System.out.println("a- Agregar un nuevo cliente");
+							System.out.println("b- Listar clientes");
+							System.out.println("c- Salir");
+							System.out.print("Ingrese una opción: ");
+							opcionCliente = sc.next();
+							try {
+								validarOpcion5(opcionCliente);							
+							} catch (OpcionInvalidaExcepcion e) {
+								System.err.println(e.getMessage());
+							}
+							
+							if(opcionCliente.equals("a")) {
+								agregarCliente();
+							}else if(opcionCliente.equals("b")) {
+								listarCliente();
+							}
+						}while(!opcionCliente.equals("c"));												
+					} catch (ListaVaciaExcepcion e) {
+						System.err.println(e.getMessage());
 						System.out.println();
-						System.out.println("a- Agregar un nuevo cliente");
-						System.out.println("b- Listar clientes");
-						System.out.println("c- Salir");
-						System.out.print("Ingrese una opción: ");
-						opcionCliente = sc.next();
-						System.out.println();
-						
-						if(opcionCliente.equals("a")) {
-							agregarCliente();
-						}else if(opcionCliente.equals("b")) {
-							listarCliente();
-						}
-					}while(!opcionCliente.equals("c"));
+					}
 					break;
 				case 3:
 					do {
@@ -513,52 +522,69 @@ public class Main {
 	}
 	
 	public static void agregarCliente() {
-		/*
-		System.out.print("Ingrese id del cliente: ");
-		int id = sc.nextInt();
-		sc.nextLine();
-		
-		System.out.print("Ingrese nombre del cliente: ");
-		String nombre = sc.nextLine();
-		
-		System.out.print("Ingrese direccion del cliente: ");
-		String direccion = sc.nextLine();
-		
-		System.out.print("Ingrese telefono del cliente: ");
-		String telefono = sc.nextLine();
-		boolean estadoTel = contieneGuion(telefono);
-		while (!estadoTel) {
-			System.out.println("El telefono debe contener un guion luego de la caracteristica.");
-			System.out.print("Introduzca un numero de telefono valido: ");
-			telefono = sc.nextLine();
-			estadoTel = contieneGuion(telefono);
-		} 
-		
-		System.out.print("Ingrese localidad del cliente: ");
-		String localidad = sc.nextLine();
-		boolean estadoLoc = valirdarLongitud(localidad);
-		while (!estadoLoc) {
-			System.out.println("La localidad debe contener menos de 50 caracteres.");
-			System.out.println("Ingrese nuevamente la localidad: ");
-			localidad = sc.nextLine();
-			estadoLoc = valirdarLongitud(localidad);
+		try {
+			boolean valido = true;
+			
+			System.out.print("Ingrese id del cliente: ");
+			int id = sc.nextInt();
+			sc.nextLine();
+			
+			System.out.print("Ingrese nombre del cliente: ");
+			String nombre = sc.nextLine();
+			
+			System.out.print("Ingrese direccion del cliente: ");
+			String direccion = sc.nextLine();
+			
+			String telefono = "";
+			while (!valido) {
+				try {
+					System.out.print("Ingrese telefono del cliente: ");
+					telefono = sc.nextLine();
+					contieneGuion(telefono);
+					valido = true;
+				} catch (CaracterEspecialExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			String localidad = "";
+			valido = false;
+			while (!valido) {
+				try {
+					System.out.print("Ingrese localidad del cliente: ");
+					localidad = sc.nextLine();
+					validarLongtud(localidad);
+					valido = true;
+				} catch (LongitudInvalidaExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			System.out.print("Ingrese provincia del cliente: ");
+			String provincia = sc.nextLine();
+			
+			String email = "";
+			valido = false;
+			while (!valido) {
+				try {
+					System.out.print("Ingrese email del cliente: ");
+					email = sc.nextLine();
+					validarEmail(email);
+					valido = true;
+				} catch (EmailInvalidoExcepcion e) {
+					System.err.println(e.getMessage());
+				} catch (EmailVacioExcepcion e) {
+					System.err.println(e.getMessage());
+				} catch (DominioInvalidoExcepcion e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			Cliente cliente = new Cliente(id,nombre,direccion,telefono,localidad,provincia,email);
+			negocio.AgregarCliente(cliente);
+		} catch (ObjetoExistenteExcepcion e) {
+			System.err.println(e.getMessage());
 		}
-		
-		System.out.print("Ingrese provincia del cliente: ");
-		String provincia = sc.nextLine();
-		
-		System.out.print("Ingrese email del cliente: ");
-		String email = sc.nextLine();
-		/*boolean estado = validarEmail(email);
-		while (!estado) {
-			System.out.println("El email no es valido.");
-			System.out.print("Introduzca un email valido: ");
-			email = sc.next();
-			estado = validarEmail(email);
-		}
-		
-		Cliente cliente = new Cliente(id,nombre,direccion,telefono,localidad,provincia,email);
-		negocio.AgregarCliente(cliente);*/
 	}
 	
 	public static void listarCliente() {
@@ -572,7 +598,6 @@ public class Main {
 		
 		cliente.ListarPedidos();
 	}	
-	
 	
 	public static void iniciarPedido() {
 	    System.out.print("Ingrese id del cliente para cargarle su pedido: ");
@@ -789,17 +814,20 @@ public class Main {
 		}
 	}
 	
-	public static boolean contieneGuion(String cadena) {
-		boolean contiene = true;
+	public static void contieneGuion(String cadena) {
+		boolean valido = false;
 		char[] caracteres = cadena.toCharArray();
 		
 		for (int i = 0; i < caracteres.length; i++) {
 			char c = caracteres[i];
 			if (c == '-' && (i == 2 || i == 3)) {
-				return contiene;
+				valido = true;
 			}
 		}
-		return !contiene;
+
+		if (!valido) {
+			throw new CaracterEspecialExcepcion("Error: El numero debe contener un guion luego de la caracteristica. Ej: 11-24565234");
+		}
 	}
 	
 	public static void validarOpcion1(int numero) {
@@ -823,6 +851,12 @@ public class Main {
 	public static void validarOpcion4(int numero) {
 		if (!(numero == 1) && !(numero == 2) && !(numero == 3) && !(numero == 4) && !(numero == 5) && !(numero == 6) && !(numero == 7) && !(numero == 8) && !(numero == 9) && !(numero == 10) && !(numero == 11)){
 			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. El numero debe ser 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 u 11.");
+		}
+	}
+	
+	public static void validarOpcion5(String letra) {
+		if (!letra.equals("a") && !letra.equals("b") && !letra.equals("c")) {
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b' o 'c'.");
 		}
 	}
 	
