@@ -113,7 +113,11 @@ public class Main {
 						System.out.println("d- Salir");
 						System.out.print("Ingrese una opción: ");
 						opcionPedido = sc.next();
-						System.out.println();
+						try {
+							validarOpcion6(opcionPedido);							
+						} catch (OpcionInvalidaExcepcion e) {
+							System.err.println(e.getMessage());
+						}
 						
 						if(opcionPedido.equals("a")) {
 							iniciarPedido();
@@ -122,7 +126,7 @@ public class Main {
 						}else if(opcionPedido.equals("c")) {
 							listarPedidos();
 						}
-					}while(!opcionPedido.equals("d"));
+					}while(!opcionPedido.equals("d"));						
 					break;
 				case 4:
 					gestionarVentas();
@@ -600,53 +604,54 @@ public class Main {
 	}	
 	
 	public static void iniciarPedido() {
-	    System.out.print("Ingrese id del cliente para cargarle su pedido: ");
-	    int idcliente = sc.nextInt();
-	    Cliente cliente = negocio.RetornoCliente(idcliente);
-	    
-	    if (cliente == null) {
-	        System.out.println("El cliente no existe");
-	    } else {
-	        System.out.print("Ingrese id del pedido: ");
-	        int id = sc.nextInt();
-	        
-	        System.out.print("Ingrese fecha del pedido: ");
-	        String fecha = sc.next();
-	        
-	        System.out.print("Ingrese monto total del pedido: ");
-	        Double monto = sc.nextDouble();
-	        
-	        Pedido pedido = new Pedido(id, fecha, monto);
-	        
-	        System.out.print("¿Cuantas autopartes ordenara? ");
-	        int numAutopartes = sc.nextInt();
-	        
-	        for (int i = 0; i <= numAutopartes - 1; i++) {
-	        	System.out.print("Ingrese id de la autoparte: ");
-	 	        int idAutoparte = sc.nextInt();
-	 	        Autoparte autoparte = negocio.RetornoAutoparte(idAutoparte);
-	 	        
- 	        	if (autoparte == null) {
-	                System.out.println("La autoparte con ID: " + idAutoparte + " no existe.");
-	                i--;
-	            } else {
-	                pedido.CargarAutopartePed(autoparte);
-	                System.out.print("Ingrese cantidad de la autoparte: ");
-	                int cantidad = sc.nextInt();
-	                pedido.CargarCantidadPed(cantidad);
-            	} 
-	        }
-		        
-	       if (!pedido.getAutopartes().isEmpty()) { // Verifica si se han cargado autopartes en el pedido
-	    	   if (pedido.DisminuirStock()) {
-	    		   cliente.CargarPedido(pedido);
-	    	   } else {
-	    		   System.out.println("La operación no se completó debido a falta de stock.");
-	    	   }
-	        } else {
-	        	System.out.println("El pedido no contiene ninguna autoparte.");
-	        }
-	    }
+		try {
+			System.out.print("Ingrese id del cliente para cargarle su pedido: ");
+			int idcliente = sc.nextInt();
+			Cliente cliente = negocio.RetornoCliente(idcliente);
+			
+			System.out.print("Ingrese id del pedido: ");
+			int id = sc.nextInt();
+			
+			System.out.print("Ingrese fecha del pedido: ");
+			String fecha = sc.next();
+			
+			System.out.print("Ingrese monto total del pedido: ");
+			Double monto = sc.nextDouble();
+			
+			Pedido pedido = new Pedido(id, fecha, monto);
+			
+			System.out.print("¿Cuantas autopartes ordenara (3 como maximo)? ");
+			int numAutopartes = sc.nextInt();
+			validarCantidad(numAutopartes);
+			
+			for (int i = 0; i <= numAutopartes - 1; i++) {
+				try {
+					System.out.print("Ingrese id de la autoparte: ");
+					int idAutoparte = sc.nextInt();
+					Autoparte autoparte = negocio.RetornoAutoparte(idAutoparte);
+					
+					pedido.CargarAutopartePed(autoparte);
+					
+					System.out.print("Ingrese cantidad de la autoparte: ");
+					int cantidad = sc.nextInt();
+					pedido.CargarCantidadPed(cantidad);					
+				} catch (ObjetoInexistenteExcepcion e) {
+					i--;
+					System.err.println(e.getMessage());
+				}
+			}
+			
+			pedido.DisminuirStock();
+			cliente.CargarPedido(pedido);
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (LongitudInvalidaExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (ListaVaciaExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (AccionImposibleExcepcion e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public static void gestionarVentas() {
@@ -750,6 +755,7 @@ public class Main {
 		}
 	}
 	
+	
 	public static void cancelarPedido() {
 		System.out.println("Ingrese id del cliente para eliminar el pedido de su lista");
 		int idCliente = sc.nextInt();
@@ -830,6 +836,12 @@ public class Main {
 		}
 	}
 	
+	public static void validarCantidad(int cantidad) {
+		if (cantidad > 3) {
+			throw new LongitudInvalidaExcepcion("Error: No puede ordenar mas de 3 autopartes.");
+		}
+	}
+	
 	public static void validarOpcion1(int numero) {
 		if (numero < 1 || numero > 6) {
 			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. El numero debe ser 1, 2, 3, 4, 5 o 6.");
@@ -857,6 +869,12 @@ public class Main {
 	public static void validarOpcion5(String letra) {
 		if (!letra.equals("a") && !letra.equals("b") && !letra.equals("c")) {
 			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b' o 'c'.");
+		}
+	}
+
+	public static void validarOpcion6(String letra) {
+		if (!letra.equals("a") && !letra.equals("b") && !letra.equals("c") && !letra.equals("d")) {
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b', 'c', 'd'.");
 		}
 	}
 	

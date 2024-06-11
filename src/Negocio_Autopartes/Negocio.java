@@ -31,7 +31,7 @@ public class Negocio {
 				return cliente;
 			}
 		}
-		return null;
+		throw new ObjetoInexistenteExcepcion("Error: No se encontro ningun cliente con el ID: " + id);
 	}
 	
 	public Usuario RetornoUsuario(int id) {

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import java.util.Scanner;
 
+import Excepciones.AccionImposibleExcepcion;
+import Excepciones.ListaVaciaExcepcion;
+
 public class Pedido {
 	public static Scanner sc = new Scanner(System.in);
 
@@ -19,11 +22,6 @@ public class Pedido {
 		setMontoTotal(montoTotal);
 		autopartepedido = new ArrayList<Autoparte>();
 		autoparteCantidad = new ArrayList<>();
-	}
-	
-	
-	public ArrayList<Autoparte> getAutopartes() {
-	    return autopartepedido;
 	}
 	
 	public void CargarAutopartePed(Autoparte autoparte) {
@@ -66,7 +64,7 @@ public class Pedido {
 		System.out.println("Se devolvio el stock a su origen");
 	}
 	
-	public boolean DisminuirStock() {
+	public void DisminuirStock() {
 	    for (int i = 0; i < autopartepedido.size(); i++) {
 	    	Autoparte autoparte = autopartepedido.get(i);
 	    	int cantidad = autoparteCantidad.get(i);
@@ -74,11 +72,11 @@ public class Pedido {
 	        if (VerificarStock(autoparte, cantidad)) {
 	            autoparte.RestarStock(cantidad);
 	        } else {
-	            System.out.println("No había suficiente stock para: " + autoparte.getModelo());
-	            return false;
+	        	throw new AccionImposibleExcepcion("No había suficiente stock para: " + autoparte.getModelo());
 	        }
 	    }
-	    return true;
+
+	    throw new ListaVaciaExcepcion("Error: El pedido no contiene autopartes.");
 	}
 
 
