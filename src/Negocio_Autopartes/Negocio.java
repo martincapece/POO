@@ -156,7 +156,21 @@ public class Negocio {
 		}
 	}
 	
-	// Estan en amarillo porque todavia no los usamos
+	public boolean ObtenerAutopartes() {
+		if (autopartes.isEmpty()) {
+			throw new ListaVaciaExcepcion("Error: No hay autopartes en el sistema.");
+		}
+		return true;
+	}
+	
+	public int ObtenerCantidadAutopartes() {
+		if (autopartes.isEmpty()) {
+			throw new ListaVaciaExcepcion("Error: No hay autopartes en el sistema.");
+		} else {
+			return autopartes.size();
+		}
+	}
+
 	private boolean VerificarStock(Autoparte autoparte, int stock) {
 		boolean posible = true;
 		

@@ -1,5 +1,7 @@
 package Ejecucion;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import Negocio_Autopartes.*;
@@ -12,6 +14,8 @@ public class Main {
 	public static void main(String[] args) {
 		negocio = new Negocio();
 		Usuario administrador= new Usuario(1, "administrador", "1234", "administrador@uade.edu.ar");
+		Cliente cliente1 = new Cliente(1, "dsaa", "dsadsa", "dsadsa", "dsadsa", "dsadsa", "dsadsa@dsa.comn");
+		negocio.AgregarCliente(cliente1);
 		negocio.CargarUsuario(administrador);
 		String opcion = "";
 		int funcionalidad = 0;	
@@ -25,7 +29,7 @@ public class Main {
 			if (usuario == null) {
 				usuario = iniciarSesion();
 				System.out.println();
-				System.out.println("¡Bienvenido " + usuario + "!");
+				System.out.println("¡Bienvenido " + usuario.getUsuario() + "!");
 			}
 			
 			try {
@@ -54,6 +58,7 @@ public class Main {
 							try {
 								System.out.print("Ingrese una opción: ");
 								opcion = sc.next();
+								opcion = opcion.toLowerCase();
 								validarOpcion3(opcion);
 							} catch (OpcionInvalidaExcepcion e) {
 								System.err.print(e.getMessage());
@@ -87,6 +92,7 @@ public class Main {
 							System.out.println("c- Salir");
 							System.out.print("Ingrese una opción: ");
 							opcionCliente = sc.next();
+							opcionCliente = opcionCliente.toLowerCase();
 							try {
 								validarOpcion5(opcionCliente);							
 							} catch (OpcionInvalidaExcepcion e) {
@@ -113,6 +119,7 @@ public class Main {
 						System.out.println("d- Salir");
 						System.out.print("Ingrese una opción: ");
 						opcionPedido = sc.next();
+						opcionPedido = opcionPedido.toLowerCase();
 						try {
 							validarOpcion6(opcionPedido);							
 						} catch (OpcionInvalidaExcepcion e) {
@@ -136,7 +143,7 @@ public class Main {
 					System.out.println();
 					break;
 				case 6:
-					System.out.println("¡Hasta la proxima " + usuario + "!");
+					System.out.println("¡Hasta la proxima " + usuario.getUsuario() + "!");
 					continuar = false;
 					break;
 				}
@@ -190,7 +197,7 @@ public class Main {
 						valido = true;
 					} catch (LongitudInvalidaExcepcion e) {
 						System.err.println(e.getMessage());
-					} catch (CaracterEspecialExcepcion e) {
+					} catch (CuotasInvalidasExcepecion e) {
 						System.err.println(e.getMessage());
 					}
 				}
@@ -465,7 +472,6 @@ public class Main {
 		} catch (ObjetoInexistenteExcepcion e) {
 			System.err.println(e.getMessage());
 		}
-		
 	}
 	
 	public static void modificarStock() {
@@ -546,7 +552,7 @@ public class Main {
 					telefono = sc.nextLine();
 					contieneGuion(telefono);
 					valido = true;
-				} catch (CaracterEspecialExcepcion e) {
+				} catch (CuotasInvalidasExcepecion e) {
 					System.err.println(e.getMessage());
 				}
 			}
@@ -594,17 +600,11 @@ public class Main {
 	public static void listarCliente() {
 		negocio.ListarClientes();
 	}
-	
-	public static void listarPedidos() {
-		System.out.print("Ingresar el id del cliente para listar sus pedidos: ");
-		int idCliente = sc.nextInt();
-		Cliente cliente = negocio.RetornoCliente(idCliente);
 		
-		cliente.ListarPedidos();
-	}	
-	
 	public static void iniciarPedido() {
 		try {
+			negocio.ObtenerAutopartes();
+			boolean valido = false;
 			System.out.print("Ingrese id del cliente para cargarle su pedido: ");
 			int idcliente = sc.nextInt();
 			Cliente cliente = negocio.RetornoCliente(idcliente);
@@ -612,17 +612,35 @@ public class Main {
 			System.out.print("Ingrese id del pedido: ");
 			int id = sc.nextInt();
 			
-			System.out.print("Ingrese fecha del pedido: ");
-			String fecha = sc.next();
+			String fecha = "";
+			while (!valido) {
+				try {
+					System.out.print("Ingrese fecha de la venta: ");
+					fecha = sc.next();
+					validarFecha(fecha);
+					valido = true;
+				} catch (FechaNoValidaExcepcion e) {
+					sc.nextLine();
+					System.err.println(e.getMessage());
+				}
+			}
 			
 			System.out.print("Ingrese monto total del pedido: ");
 			Double monto = sc.nextDouble();
 			
 			Pedido pedido = new Pedido(id, fecha, monto);
+			validarPedido(cliente, id);
 			
+			System.out.println();
+			System.out.println("Autopartes disponibles:");
+			listarAutoparte();
+			System.out.println();
+
 			System.out.print("¿Cuantas autopartes ordenara (3 como maximo)? ");
 			int numAutopartes = sc.nextInt();
+			validarPositivo(numAutopartes);
 			validarCantidad(numAutopartes);
+			validarPosibilidad(numAutopartes);
 			
 			for (int i = 0; i <= numAutopartes - 1; i++) {
 				try {
@@ -643,6 +661,7 @@ public class Main {
 			
 			pedido.DisminuirStock();
 			cliente.CargarPedido(pedido);
+			
 		} catch (ObjetoInexistenteExcepcion e) {
 			System.err.println(e.getMessage());
 		} catch (LongitudInvalidaExcepcion e) {
@@ -651,45 +670,105 @@ public class Main {
 			System.err.println(e.getMessage());
 		} catch (AccionImposibleExcepcion e) {
 			System.err.println(e.getMessage());
+		} catch (ObjetoExistenteExcepcion e) {
+			System.err.println(e.getMessage());
 		}
 	}
-
+	
+	public static void cancelarPedido() {
+		try {
+			System.out.print("Ingrese id del cliente para eliminar el pedido de su lista: ");
+			int idCliente = sc.nextInt();
+			Cliente cliente = negocio.RetornoCliente(idCliente);
+			
+			System.out.print("Ingrese id del pedido para eliminarlo: ");
+			int idPedido = sc.nextInt();
+			Pedido pedido = cliente.RetornoPedido(idPedido);
+			
+			pedido.CancelarPedido();
+			
+			cliente.EliminarPedido(pedido);
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		}
+	}	
+	
+	public static void listarPedidos() {
+		try {
+			System.out.print("Ingresar el id del cliente para listar sus pedidos: ");
+			int idCliente = sc.nextInt();
+			Cliente cliente = negocio.RetornoCliente(idCliente);
+			
+			cliente.ListarPedidos();			
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (ListaVaciaExcepcion e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
 	public static void gestionarVentas() {
-		System.out.print("Ingrese id del cliente para cargarle su venta: ");
-		int idcliente = sc.nextInt();
-		Cliente cliente = negocio.RetornoCliente(idcliente);
-		
-		if (cliente == null) {
-			System.out.println("Error: No existe un cliente con el ID proporcionado.");
-		} else {
+		try {
+			boolean valido = false;
 			System.out.println("1- Venta directa");
 			System.out.println("2- Registrar pedido reservado como venta");
 			System.out.print("Ingrese una opcion:  ");
 			int tipoventa = sc.nextInt();
+			try {
+				validarOpcion2(tipoventa);
+			} catch (OpcionInvalidaExcepcion e) {
+				System.err.println(e.getMessage());
+			}
+			
+			System.out.print("Ingrese id del cliente para cargarle su venta: ");
+			int idcliente = sc.nextInt();
+			Cliente cliente = negocio.RetornoCliente(idcliente);
 			
 			if (tipoventa == 1) {
 				System.out.print("Ingrese id de la venta: ");
 				int id = sc.nextInt();
 				
-				System.out.print("Ingrese fecha de la venta: ");
-				String fecha = sc.nextLine();
+				String fecha = "";
+				while (!valido) {
+					try {
+						System.out.print("Ingrese fecha de la venta: ");
+						fecha = sc.next();
+						validarFecha(fecha);
+						valido = true;
+					} catch (FechaNoValidaExcepcion e) {
+						sc.nextLine();
+						System.err.println(e.getMessage());
+					}
+				}
 				
 				System.out.print("Ingrese monto total de la venta: ");
 				Double monto = sc.nextDouble();
+				sc.nextLine();
 				
 				System.out.println("Opcion 'tc' para tarjeta de credito.");
 				System.out.println("Opcion 'td' para tarjeta de debito.");
 				System.out.println("Opcion 'ef' para efectivo.");
 				System.out.print("Ingrese metodo de pago: ");
 				String metodopago = sc.nextLine();
-
-				Venta venta = null;
+				metodopago = metodopago.toLowerCase();
+				validarMetodoPago(metodopago);
 				
+				Venta venta = null;
 				switch (metodopago) {
 				case "tc":
-					System.out.print("Ingrese cuotas a pagar: ");
-					int cuotas = sc.nextInt();
-					venta = new VentaConCredito(id, fecha, monto, cuotas);
+					int cuotas = 0;
+					valido = false;
+					while (!valido) {
+						try {
+							System.out.print("Ingrese cuotas a pagar: ");
+							cuotas = sc.nextInt();
+							validarCuotas(cuotas);
+							valido = true;
+						} catch (CuotasInvalidasExcepecion e) {
+							System.err.println(e.getMessage());
+						}
+					}
+					venta = new VentaConCredito(id, fecha, monto, cuotas);							
 					break;
 				case "td":
 					venta = new VentaConDebito(id, fecha, monto);
@@ -697,80 +776,67 @@ public class Main {
 				case "ef":
 					venta = new VentaConDebito(id, fecha, monto);
 					break;
-				default:
-					System.err.println("Metodo de pago no reconocido.");
-					gestionarVentas();
-					break;
 				}
 				
-				System.out.print("¿Cuantas autopartes ordenara? ");
-		        int numAutopartes = sc.nextInt();
+				System.out.println();
+				System.out.println("Autopartes disponibles:");
+				listarAutoparte();
+				System.out.println();
+
+				System.out.print("¿Cuantas autopartes ordenara (3 como maximo)? ");
+				int numAutopartes = sc.nextInt();
+				validarPositivo(numAutopartes);
+				validarCantidad(numAutopartes);
+				validarPosibilidad(numAutopartes);
 				
-		        for (int i = 0; i <= numAutopartes - 1; i++) {
-		        	System.out.print("Ingrese id de la autoparte: ");
-		 	        int idAutoparte = sc.nextInt();
-		 	        Autoparte autoparte = negocio.RetornoAutoparte(idAutoparte);
-		 	        
-	 	        	if (autoparte == null) {
-		                System.out.println("La autoparte con ID: " + idAutoparte + " no existe.");
-		                i--;
-		            } else {
-		                venta.CargarAutopartePed(autoparte);
-		                System.out.print("Ingrese cantidad de la autoparte: ");
-		                int cantidad = sc.nextInt();
-		                venta.CargarCantidadPed(cantidad);
-	            	}
-		        }
+				for (int i = 0; i <= numAutopartes - 1; i++) {
+					try {
+						System.out.print("Ingrese id de la autoparte: ");
+						int idAutoparte = sc.nextInt();
+						Autoparte autoparte = negocio.RetornoAutoparte(idAutoparte);
+						
+						venta.CargarAutopartePed(autoparte);
+						
+						System.out.print("Ingrese cantidad de la autoparte: ");
+						int cantidad = sc.nextInt();
+						venta.CargarCantidadPed(cantidad);					
+					} catch (ObjetoInexistenteExcepcion e) {
+						i--;
+						System.err.println(e.getMessage());
+					}
+				}
 				
-				if (venta.DisminuirStock()) {
-			        System.out.println("el monto total de la venta sera: " + venta.CalcularTotal());
-			        cliente.CargarVenta(venta);
-			    } else {
-			        System.out.println("La operación no se completó debido a falta de stock.");
-			    }
+				venta.DisminuirStock();
+				System.out.println("el monto total de la venta sera: " + venta.CalcularTotal());
+				cliente.CargarVenta(venta);
 			} else {
 				System.out.println("La lista de pedidos disponibles para pasar a ventas es: ");
 				cliente.ListarPedidos();
 				
 				System.out.print("Ingrese id del pedido que pasara a venta: ");
 				int id = sc.nextInt();
+
+				Pedido pedido = cliente.RetornoPedido(id);
+				Venta venta = pedido.convertirAVenta();
 				
-				// Recuperar el pedido del cliente
-			    Pedido pedido = cliente.RetornoPedido(id);
-			    
-			    if (pedido != null) {
-			        // Convertir el pedido en una venta
-			        Venta venta = pedido.convertirAVenta();
+				cliente.CargarVenta(venta);
 				
-			        // Agregar la venta a la lista de ventas del cliente
-			        cliente.CargarVenta(venta);
-	
-			        System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
-			        
-			        System.out.println("el monto total es de: " + venta.CalcularTotal());
-			    	} else {
-				        System.out.println("El pedido con el ID ingresado no existe.");
-				    }
+				System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
+				System.out.println("el monto total es de: " + venta.CalcularTotal());
 			}
+		} catch (ObjetoExistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (MetodoNoReconocidoExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (LongitudInvalidaExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (ListaVaciaExcepcion e) {
+			System.err.println(e.getMessage());
+		} catch (AccionImposibleExcepcion e) {
+			System.err.println(e.getMessage());
 		}
-	}
-	
-	
-	public static void cancelarPedido() {
-		System.out.println("Ingrese id del cliente para eliminar el pedido de su lista");
-		int idCliente = sc.nextInt();
 		
-		System.out.println("Ingrese id del pedido para eliminarlo");
-		int idPedido = sc.nextInt();
-		
-		Cliente cliente = negocio.RetornoCliente(idCliente);
-		Pedido pedido = cliente.RetornoPedido(idPedido);
-		
-		pedido.CancelarPedido();
-		
-		cliente.EliminarPedido(idPedido);
-		System.out.println("Se elimino correctamente el pedido");
-	}		
+	}	
 	
 	public static void validarLongtud(String cadena) {
 		if (cadena.length() < 1 || cadena.length() > 50) {
@@ -796,8 +862,14 @@ public class Main {
 		
 		for (char caracter : caracteres) {
 			if (!Character.isLetterOrDigit(caracter)) {
-				throw new CaracterEspecialExcepcion("Error: La contraseña no puede tener caracteres especiales");
+				throw new CuotasInvalidasExcepecion("Error: La contraseña no puede tener caracteres especiales");
 			}
+		}
+	}
+	
+	public static void validarPedido(Cliente cliente, int id) {
+		if (cliente.ComprobarPedido(id)) {
+			throw new ObjetoExistenteExcepcion("Error: El pedido con ID: " + id + " ya se encuentra cargado.");
 		}
 	}
 	
@@ -832,7 +904,7 @@ public class Main {
 		}
 
 		if (!valido) {
-			throw new CaracterEspecialExcepcion("Error: El numero debe contener un guion luego de la caracteristica. Ej: 11-24565234");
+			throw new CuotasInvalidasExcepecion("Error: El numero debe contener un guion luego de la caracteristica. Ej: 11-24565234");
 		}
 	}
 	
@@ -881,6 +953,34 @@ public class Main {
 	public static void validarPositivo(int numero) {
 		if (numero < 0) {
 			throw new NumeroNegativoExcepcion("Error: El numero debe ser positivo.");
+		}
+	}
+	
+	public static void validarFecha(String fecha) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		sdf.setLenient(false);
+		try {
+			sdf.parse(fecha);
+		} catch (ParseException e) {
+			throw new FechaNoValidaExcepcion("Error: La fecha ingresada no es valida. Ej: dd/mm/aaaa");
+		}
+	}
+	
+	public static void validarMetodoPago(String metodo) {
+		if (metodo.equals("tc") && metodo.equals("td") && metodo.equals("ef")) {
+			throw new MetodoNoReconocidoExcepcion("Error: El metodo de pago es incorrecto. Solo puede pagar mediante 'tc', 'td' o 'ef'");
+		}
+	}
+	
+	public static void validarCuotas(int cuotas) {
+		if (!(cuotas == 2) && !(cuotas == 3) && !(cuotas == 6)) {
+			throw new CuotasInvalidasExcepecion("Error: No puede pagar en " + cuotas + " cuotas. Debe elegir entre 2, 3 o 6 cuotas.");
+		}
+	}
+	
+	public static void validarPosibilidad(int cantAutopartes) {
+		if (cantAutopartes > negocio.ObtenerCantidadAutopartes()) {
+			throw new AccionImposibleExcepcion("Error: No puede solicitar una cantidad de " + cantAutopartes + " autopartes ya que en el sistema solo hay " + negocio.ObtenerCantidadAutopartes());
 		}
 	}
 

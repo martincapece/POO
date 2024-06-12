@@ -1,6 +1,9 @@
 package Negocio_Autopartes;
 import java.util.ArrayList;
 
+import Excepciones.ListaVaciaExcepcion;
+import Excepciones.ObjetoInexistenteExcepcion;
+
 public class Cliente {
 	
 	private int id;
@@ -29,14 +32,11 @@ public class Cliente {
 	
 	public Pedido RetornoPedido(int id) {
 		for(Pedido pedido: pedidos) {
-			if(pedido.getId()==id) {
+			if(pedido.getId() == id) {
 				return pedido;
-			}else {
-				System.out.println("El pedido no existe");
-				return null;
 			}
 		}
-		return null;
+		throw new ObjetoInexistenteExcepcion("Error: No se encontro ningun pedido con el ID: " + id);
 	}
 	
 	public Venta RetornoVenta(int id) {
@@ -51,7 +51,6 @@ public class Cliente {
 		return null;
 	}
 	
-	
 	public void CargarPedido(Pedido pedido) {
 		pedidos.add(pedido);
 		System.out.println("Se agrego el pedido a la lista del cliente.");
@@ -62,23 +61,31 @@ public class Cliente {
 		System.out.println("Se agrego el pedido a la lista del cliente.");
 	}
 	
-	public void EliminarPedido(int id) {
+	public void EliminarPedido(Pedido pedido) {
+		pedidos.remove(pedido);
+		System.out.println("Se elimino el pedido del cliente.");
+	}
+	
+	public boolean ComprobarPedido(int id) {
+		boolean existe = true;
+		
 		for (Pedido pedido : pedidos) {
 			if (pedido.getId() == id) {
-				pedidos.remove(pedido);
+				return existe;
 			}
 		}
-		System.out.println("Se elimino el pedido del cliente.");
+		return !existe;
 	}
 	
 	public void ListarPedidos() {
         if (pedidos.isEmpty()) {
-            System.out.println("No hay pedidos por parte del cliente.");
-        } else {
-            for (Pedido pedido : pedidos) {
-                System.out.println("ID: " + pedido.getId() + ", Fecha: " + pedido.getFecha() + ", Total: " + pedido.getMontoTotal());
-            }
+        	throw new ListaVaciaExcepcion("Error: El cliente no ha realizado ningun pedido.");
         }
+
+        for (Pedido pedido : pedidos) {
+            System.out.println("ID: " + pedido.getId() + ", Fecha: " + pedido.getFecha() + ", Total: " + pedido.getMontoTotal());
+        }
+        
     }
 	
 	public void ListarVentas() {

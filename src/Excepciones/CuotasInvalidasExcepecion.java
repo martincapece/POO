@@ -1,7 +1,7 @@
 package Excepciones;
 
-public class CaracterEspecialExcepcion extends RuntimeException {
-	public CaracterEspecialExcepcion(String mensaje) {
+public class CuotasInvalidasExcepecion extends RuntimeException {
+	public CuotasInvalidasExcepecion(String mensaje) {
 		super(mensaje);
 	}
 }
