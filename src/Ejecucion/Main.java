@@ -14,8 +14,6 @@ public class Main {
 	public static void main(String[] args) {
 		negocio = new Negocio();
 		Usuario administrador= new Usuario(1, "administrador", "1234", "administrador@uade.edu.ar");
-		Cliente cliente1 = new Cliente(1, "dsaa", "dsadsa", "dsadsa", "dsadsa", "dsadsa", "dsadsa@dsa.comn");
-		negocio.AgregarCliente(cliente1);
 		negocio.CargarUsuario(administrador);
 		String opcion = "";
 		int funcionalidad = 0;	
@@ -737,17 +735,9 @@ public class Main {
 		try {
 			negocio.ObtenerAutopartes();
 			boolean valido = false;
-			System.out.println("a- Venta directa");
-			System.out.println("b- Registrar pedido reservado como venta");
-			System.out.println("c- Salir");			
-			System.out.print("Ingrese una opcion:  ");
-			String tipoVenta = sc.next();
-			tipoVenta = tipoVenta.toLowerCase();
-			try {
-				validarOpcion5(tipoVenta);
-			} catch (OpcionInvalidaExcepcion e) {
-				System.err.println(e.getMessage());
-			}
+			
+			System.out.println("La lista de clientes disponibles es: ");
+			negocio.ListarClientes();
 			
 			System.out.print("Ingrese id del cliente para cargarle su venta: ");
 			int idcliente = sc.nextInt();
@@ -852,6 +842,9 @@ public class Main {
 	
 	public static void convertirPedido() {
 		try {
+			System.out.println("La lista de clientes disponibles es: ");
+			negocio.ListarClientes();
+			
 			System.out.print("Ingrese id del cliente para cargarle su venta: ");
 			int idcliente = sc.nextInt();
 			Cliente cliente = negocio.RetornoCliente(idcliente);
