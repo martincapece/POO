@@ -18,10 +18,10 @@ public class Pedido {
 	ArrayList<Autoparte> autopartePedido;
 	ArrayList<Integer> autoparteCantidad;
 	
-	public Pedido(int id, String fecha, double montoTotal) {
+	public Pedido(int id, String fecha) {
 		setId(id);
 		setFecha(fecha);
-		setMontoTotal(montoTotal);
+		setMontoTotal(0);
 		autopartePedido = new ArrayList<Autoparte>();
 		autoparteCantidad = new ArrayList<>();
 	}
@@ -63,6 +63,19 @@ public class Pedido {
 				autopartePedido.get(i).sumarStock(autoparteCantidad.get(i));
 		}
 		System.out.println("Se devolvio el stock a su origen");
+	}
+	
+	public void CalcularMontoTotal() {
+		if (autopartePedido.isEmpty()) {
+			throw new ListaVaciaExcepcion("Error: El pedido no contiene autopartes.");			
+		} else {
+			for (int i = 0; i < autopartePedido.size(); i++) {
+				Autoparte autoparte = autopartePedido.get(i);
+				int cantidad = autoparteCantidad.get(i);
+				
+				this.montoTotal += (autoparte.getPrecio() * cantidad);
+			}			
+		}
 	}
 	
 	public void DisminuirStock() {
@@ -115,13 +128,13 @@ public class Pedido {
 					System.err.println(e.getMessage());
 				}
 			}
-			venta = new VentaConCredito(this.id, this.fecha, this.montoTotal, cuotas);							
+			venta = new VentaConCredito(this.id, this.fecha, cuotas);							
 			break;
 		case "td":
-			venta = new VentaConDebito(this.id, this.fecha, this.montoTotal);
+			venta = new VentaConDebito(this.id, this.fecha);
 			break;
 		case "ef":
-			venta = new VentaConDebito(this.id, this.fecha, this.montoTotal);
+			venta = new VentaConDebito(this.id, this.fecha);
 			break;
 		}
 		

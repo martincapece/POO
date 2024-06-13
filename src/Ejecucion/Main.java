@@ -649,10 +649,7 @@ public class Main {
 				}
 			}
 			
-			System.out.print("Ingrese monto total del pedido: ");
-			Double monto = sc.nextDouble();
-			
-			Pedido pedido = new Pedido(id, fecha, monto);
+			Pedido pedido = new Pedido(id, fecha);
 			validarPedido(cliente, id);
 			
 			System.out.println();
@@ -683,6 +680,7 @@ public class Main {
 				}
 			}
 			
+			pedido.CalcularMontoTotal();
 			pedido.DisminuirStock();
 			cliente.CargarPedido(pedido);
 			
@@ -759,10 +757,6 @@ public class Main {
 				}
 			}
 			
-			System.out.print("Ingrese monto total de la venta: ");
-			Double monto = sc.nextDouble();
-			sc.nextLine();
-			
 			System.out.println("Opcion 'tc' para tarjeta de credito.");
 			System.out.println("Opcion 'td' para tarjeta de debito.");
 			System.out.println("Opcion 'ef' para efectivo.");
@@ -786,13 +780,13 @@ public class Main {
 						System.err.println(e.getMessage());
 					}
 				}
-				venta = new VentaConCredito(id, fecha, monto, cuotas);							
+				venta = new VentaConCredito(id, fecha, cuotas);							
 				break;
 			case "td":
-				venta = new VentaConDebito(id, fecha, monto);
+				venta = new VentaConDebito(id, fecha);
 				break;
 			case "ef":
-				venta = new VentaConDebito(id, fecha, monto);
+				venta = new VentaConDebito(id, fecha);
 				break;
 			}
 			
@@ -824,6 +818,7 @@ public class Main {
 				}
 			}
 			
+			venta.CalcularMontoTotal();
 			venta.DisminuirStock();
 			System.out.println("el monto total de la venta sera: " + venta.CalcularTotal());
 			cliente.CargarVenta(venta);

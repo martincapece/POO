@@ -12,10 +12,10 @@ public abstract class Venta {
 	ArrayList<Autoparte> autopartePedido;
 	ArrayList<Integer> autoparteCantidad;
 	
-	public Venta(int id, String fecha, double montoTotal) {
+	public Venta(int id, String fecha) {
 		setId(id);
 		setFecha(fecha);
-		setMontoTotal(montoTotal);
+		setMontoTotal(0);
 		autopartePedido = new ArrayList<Autoparte>();
 		autoparteCantidad = new ArrayList<>();
 	}
@@ -51,6 +51,19 @@ public abstract class Venta {
 
 	public void setMontoTotal(double montoTotal) {
 		this.montoTotal = montoTotal;
+	}
+	
+	public void CalcularMontoTotal() {
+		if (autopartePedido.isEmpty()) {
+			throw new ListaVaciaExcepcion("Error: El pedido no contiene autopartes.");			
+		} else {
+			for (int i = 0; i < autopartePedido.size(); i++) {
+				Autoparte autoparte = autopartePedido.get(i);
+				int cantidad = autoparteCantidad.get(i);
+				
+				this.montoTotal += (autoparte.getPrecio() * cantidad);
+			}			
+		}
 	}
 	
 	public void DisminuirStock() {    
