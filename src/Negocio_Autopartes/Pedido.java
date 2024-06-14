@@ -113,17 +113,18 @@ public class Pedido {
 				System.err.println(e.getMessage());
 			}
 		}
-		
+		boolean valido2 = false;
+
 		Venta venta = null;
 		switch (metodopago) {
 		case "tc":
 			int cuotas = 0;
-			while (!valido) {
+			while (!valido2) {
 				try {
 					System.out.print("Ingrese cuotas a pagar: ");
 					cuotas = sc.nextInt();
 					this.validarCuotas(cuotas);
-					valido = true;
+					valido2 = true;
 				} catch (CuotasInvalidasExcepecion e) {
 					System.err.println(e.getMessage());
 				}

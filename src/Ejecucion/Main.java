@@ -851,6 +851,7 @@ public class Main {
 			
 			Pedido pedido = cliente.RetornoPedido(id);
 			Venta venta = pedido.convertirAVenta();
+			cliente.Sacarlistapedido(pedido);
 			
 			
 			
