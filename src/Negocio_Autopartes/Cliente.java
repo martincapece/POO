@@ -98,6 +98,22 @@ public class Cliente {
         }
     }
 	
+	public void Sacarlistapedido(Pedido pedidox) {
+        if (pedidos.isEmpty()) {
+        	throw new ListaVaciaExcepcion("Error: El cliente no ha realizado ningun pedido.");
+        }
+
+        for (Pedido pedido : pedidos) {
+        	if (pedidox==pedido) {
+        		pedidos.remove(pedidox);
+        	}
+
+        }
+        
+    }
+		
+	
+	
 	public int getId() {
 		return this.id;
 	}

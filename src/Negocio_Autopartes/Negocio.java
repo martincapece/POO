@@ -126,6 +126,9 @@ public class Negocio {
         }
     }
 	
+	
+
+	
 	public void AgregarStock(int id, int cantidad) {
 		Autoparte autoparte = this.RetornoAutoparte(id);
 		autoparte.sumarStock(cantidad);
