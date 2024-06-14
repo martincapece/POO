@@ -261,7 +261,6 @@ public class Main {
 				Usuario usuario = negocio.RetornoUsuario(id);
 				return usuario;
 			}
-			return null;	
 		} catch (OpcionInvalidaExcepcion e) {
 			System.err.println(e.getMessage());
 		} catch (InputMismatchException e) {
@@ -273,9 +272,8 @@ public class Main {
 			System.err.println(e.getMessage());
 		}
 		
-		System.out.println();
-		iniciarSesion();
-		return null;
+		return null;	
+
 	}
 	
 	public static void agregarAutoparte() {
@@ -681,6 +679,7 @@ public class Main {
 			}
 			
 			pedido.CalcularMontoTotal();
+			System.out.println(pedido.getMontoTotal());
 			pedido.DisminuirStock();
 			cliente.CargarPedido(pedido);
 			
@@ -761,7 +760,7 @@ public class Main {
 			System.out.println("Opcion 'td' para tarjeta de debito.");
 			System.out.println("Opcion 'ef' para efectivo.");
 			System.out.print("Ingrese metodo de pago: ");
-			String metodopago = sc.nextLine();
+			String metodopago = sc.next();
 			metodopago = metodopago.toLowerCase();
 			validarMetodoPago(metodopago);
 			
@@ -786,7 +785,7 @@ public class Main {
 				venta = new VentaConDebito(id, fecha);
 				break;
 			case "ef":
-				venta = new VentaConDebito(id, fecha);
+				venta = new VentaConEfectivo(id, fecha);
 				break;
 			}
 			
@@ -853,9 +852,13 @@ public class Main {
 			Pedido pedido = cliente.RetornoPedido(id);
 			Venta venta = pedido.convertirAVenta();
 			
+			
+			
+			
 			cliente.CargarVenta(venta);
 			
 			System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
+			venta.CalcularMontoTotal();
 			System.out.println("el monto total es de: " + venta.CalcularTotal());			
 		} catch (ObjetoExistenteExcepcion e) {
 			System.err.println(e.getMessage());
