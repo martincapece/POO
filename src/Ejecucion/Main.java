@@ -873,7 +873,7 @@ public class Main {
 			System.err.println(e.getMessage());
 		}
 	}
-	
+	 
 	public static void validarLongtud(String cadena) {
 		if (cadena.length() < 1 || cadena.length() > 50) {
 			throw new LongitudInvalidaExcepcion("Error: Debe contener entre 1 y 50 caracteres");

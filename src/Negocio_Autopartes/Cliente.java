@@ -99,16 +99,23 @@ public class Cliente {
     }
 	
 	public void Sacarlistapedido(Pedido pedidox) {
-        if (pedidos.isEmpty()) {
-        	throw new ListaVaciaExcepcion("Error: El cliente no ha realizado ningun pedido.");
-        }
-
-        for (Pedido pedido : pedidos) {
-        	if (pedidox==pedido) {
-        		pedidos.remove(pedidox);
-        	}
-
-        }
+	    boolean existe = this.ComprobarPedido(this.getId());
+	    
+	    if (!existe) {
+	        throw new ObjetoInexistenteExcepcion("Error: La autoparte con ID: " + id + " no existe.");
+	    } else {
+	        Pedido elegido = null;
+	        for (Pedido pedido : pedidos) {
+	            if (pedido.getId() == id) {
+	                elegido = pedido;
+	                break; // Salimos del bucle una vez que encontramos la autoparte
+	            }
+	        }
+	        if (elegido != null) {
+	            pedidos.remove(elegido);
+	            System.out.println("¡La autoparte fue eliminada con éxito!");
+	        }
+	    }
         
     }
 		
