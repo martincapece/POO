@@ -1,9 +1,7 @@
 package Negocio_Autopartes;
 
 import java.util.ArrayList;
-
-import Excepciones.AccionImposibleExcepcion;
-import Excepciones.ListaVaciaExcepcion;
+import Excepciones.*;
 
 public abstract class Venta {
 	private int id;

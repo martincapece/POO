@@ -7,7 +7,7 @@ public class VentaConEfectivo extends Venta {
 		}
 
 	public double CalcularTotal() {
-		return getMontoTotal() - (getMontoTotal() * 0.10);
+		return (getMontoTotal() - (getMontoTotal() * 0.10));
 	}
 
 }

@@ -26,21 +26,27 @@ public class Negocio {
 	}
 	
 	public Cliente RetornoCliente(int id) {
+		if (clientes.isEmpty()) {
+			throw new ObjetoInexistenteExcepcion("Error: No se encontro ningun cliente con el ID: " + id);
+		}
 		for(Cliente cliente: clientes) {
 			if(cliente.getId() == id) {
 				return cliente;
 			}
 		}
-		throw new ObjetoInexistenteExcepcion("Error: No se encontro ningun cliente con el ID: " + id);
+		return null;
 	}
 	
 	public Usuario RetornoUsuario(int id) {
+		if (usuarios.isEmpty()) {
+			throw new ObjetoInexistenteExcepcion("Error: No se encontro ningun usuario con el ID: " + id);
+		}			
 		for(Usuario usuario : usuarios) {
 			if(usuario.getId() == id) {
 				return usuario;
 			}
 		}
-		throw new UsuarioNoEncontradoExcepcion("Error: No se encontro ningun usuario con el ID: " + id);
+		return null;
 	}
 	
 	public void CargarUsuario(Usuario usuario) {
@@ -69,6 +75,17 @@ public class Negocio {
 			System.out.println("¡La autoparte fue cargada con exito!");
 		} else {
 			throw new ObjetoExistenteExcepcion("Error: La autoparte ya existe en el sistema.");
+		}
+	}
+	
+	public void CargarVenta(Venta venta) {
+		boolean existe = this.VerificarVenta(venta.getId());
+		
+		if (!existe) {
+			ventas.add(venta);
+			System.out.println("¡La venta fue cargada con exito!");
+		} else {
+			throw new ObjetoExistenteExcepcion("Error: La venta ya fue cargada el sistema.");
 		}
 	}
 	
@@ -126,8 +143,15 @@ public class Negocio {
         }
     }
 	
-	
-
+	public void ListarVentas() {
+        if (ventas.isEmpty()) {
+            throw new ListaVaciaExcepcion("Error: Actualmente no hay ventas cargadas en el sistema.");
+        } else {
+            for (Venta venta: ventas) {
+            	System.out.println("ID: " + venta.getId() + ", Fecha: " + venta.getFecha() + ", Total: " + venta.getMontoTotal());
+            }
+        }
+    }
 	
 	public void AgregarStock(int id, int cantidad) {
 		Autoparte autoparte = this.RetornoAutoparte(id);
@@ -157,6 +181,13 @@ public class Negocio {
 		} else {
 			throw new ObjetoExistenteExcepcion("Error: El cliente ya se encuentra cargado en el sistema");
 		}
+	}
+	
+	public boolean ObtenerClientes() {
+		if (autopartes.isEmpty()) {
+			throw new ListaVaciaExcepcion("Error: No hay clientes en el sistema.");
+		}
+		return true;
 	}
 	
 	public boolean ObtenerAutopartes() {
@@ -198,6 +229,18 @@ public class Negocio {
 		return !existe;
 	}
 	
+	private boolean VerificarVenta(int id) {
+		boolean existe = true;
+		
+		for (Venta venta : ventas) {
+			if (venta.getId() == id) {
+				return existe;
+			}
+		}
+		
+		return !existe;
+	}
+	
 	private boolean VerificarCliente(int id) {
 		boolean existe = true;
 		
@@ -224,6 +267,12 @@ public class Negocio {
 	
 	public void CorroborarExistencia(int id) {
 		if (this.VerificarAutoparte(id)) {
+			throw new IdExistenteExcepcion("Error: El id proporcionado ya existe en el sistema.");
+		}
+	}
+	
+	public void CorroborarExistenciaVenta(int id) {
+		if (this.VerificarVenta(id)) {
 			throw new IdExistenteExcepcion("Error: El id proporcionado ya existe en el sistema.");
 		}
 	}

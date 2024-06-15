@@ -1,8 +1,7 @@
 package Negocio_Autopartes;
-import java.util.ArrayList;
 
-import Excepciones.ListaVaciaExcepcion;
-import Excepciones.ObjetoInexistenteExcepcion;
+import java.util.ArrayList;
+import Excepciones.*;
 
 public class Cliente {
 	
@@ -90,7 +89,7 @@ public class Cliente {
 	
 	public void ListarVentas() {
         if (ventas.isEmpty()) {
-            System.out.println("No hay ventas por parte del cliente.");
+            throw new ListaVaciaExcepcion("Error: El cliente no ha realizado ninguna venta.");
         } else {
             for (Venta venta : ventas) {
                 System.out.println("ID: " + venta.getId() + ", Fecha: " + venta.getFecha() + ", Total: " + venta.getMontoTotal());
@@ -98,7 +97,7 @@ public class Cliente {
         }
     }
 	
-	public void Sacarlistapedido(Pedido pedidox) {
+	public void SacarListaPedido(Pedido pedidox) {
 	    boolean existe = this.ComprobarPedido(this.getId());
 	    
 	    if (!existe) {
@@ -108,7 +107,7 @@ public class Cliente {
 	        for (Pedido pedido : pedidos) {
 	            if (pedido.getId() == id) {
 	                elegido = pedido;
-	                break; // Salimos del bucle una vez que encontramos la autoparte
+	                break;
 	            }
 	        }
 	        if (elegido != null) {
@@ -118,8 +117,6 @@ public class Cliente {
 	    }
         
     }
-		
-	
 	
 	public int getId() {
 		return this.id;

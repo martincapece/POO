@@ -1,13 +1,8 @@
 package Negocio_Autopartes;
 
 import java.util.ArrayList;
-
 import java.util.Scanner;
-
-import Excepciones.AccionImposibleExcepcion;
-import Excepciones.CuotasInvalidasExcepecion;
-import Excepciones.ListaVaciaExcepcion;
-import Excepciones.MetodoNoReconocidoExcepcion;
+import Excepciones.*;
 
 public class Pedido {
 	public static Scanner sc = new Scanner(System.in);

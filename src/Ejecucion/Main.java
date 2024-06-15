@@ -114,7 +114,7 @@ public class Main {
 							if(opcionCliente.equals("a")) {
 								agregarCliente();
 							}else if(opcionCliente.equals("b")) {
-								listarCliente();
+								listarClientes();
 							}
 						}while(!opcionCliente.equals("c"));												
 					} catch (ListaVaciaExcepcion e) {
@@ -148,26 +148,35 @@ public class Main {
 					}while(!opcionPedido.equals("d"));						
 					break;
 				case 4:
-					do {
-						System.out.println();
-						System.out.println("a- Venta directa");
-						System.out.println("b- Registrar pedido reservado como venta");
-						System.out.println("c- Salir");			
-						System.out.print("Ingrese una opcion:  ");
-						tipoVenta = sc.next();
-						tipoVenta = tipoVenta.toLowerCase();
-						try {	
-							validarOpcion5(tipoVenta);
-						} catch (OpcionInvalidaExcepcion e) {
-							System.err.println(e.getMessage());
-						}
-						
-						if(tipoVenta.equals("a")) {
-							realizarVenta();
-						}else if(tipoVenta.equals("b")) {
-							convertirPedido();
-						}
-					}while(!tipoVenta.equals("c"));
+						do {
+							System.out.println();
+							System.out.println("a- Venta directa");
+							System.out.println("b- Registrar pedido reservado como venta");
+							System.out.println("c- Listar ventas de clientes");
+							System.out.println("d- Listar ventas del negocio");
+							System.out.println("e- Salir");			
+							System.out.print("Ingrese una opcion:  ");
+							tipoVenta = sc.next();
+							tipoVenta = tipoVenta.toLowerCase();
+							try {	
+								validarOpcion7(tipoVenta);
+							} catch (OpcionInvalidaExcepcion e) {
+								System.err.println(e.getMessage());
+							}
+							
+							if(tipoVenta.equals("a")) {
+								realizarVenta();
+							}else if(tipoVenta.equals("b")) {
+								convertirPedido();
+							}else if(tipoVenta.equals("c")) {
+								listarVentasCliente();
+							}else if(tipoVenta.equals("d")) {
+								listarVentasNegocio();
+							}
+						}while(!tipoVenta.equals("e"));
+					} catch (ListaVaciaExcepcion e) {
+						System.err.println(e.getMessage());
+					}
 					break;
 				case 5:
 					usuario = null;
@@ -619,7 +628,7 @@ public class Main {
 		}
 	}
 	
-	public static void listarCliente() {
+	public static void listarClientes() {
 		negocio.ListarClientes();
 	}
 		
@@ -627,6 +636,12 @@ public class Main {
 		try {
 			negocio.ObtenerAutopartes();
 			boolean valido = false;
+			
+			System.out.println();
+			System.out.println("Clientes disponibles:");
+			listarClientes();
+			System.out.println();
+			
 			System.out.print("Ingrese id del cliente para cargarle su pedido: ");
 			int idcliente = sc.nextInt();
 			Cliente cliente = negocio.RetornoCliente(idcliente);
@@ -679,7 +694,6 @@ public class Main {
 			}
 			
 			pedido.CalcularMontoTotal();
-			System.out.println(pedido.getMontoTotal());
 			pedido.DisminuirStock();
 			cliente.CargarPedido(pedido);
 			
@@ -698,9 +712,21 @@ public class Main {
 	
 	public static void cancelarPedido() {
 		try {
+			negocio.ObtenerClientes();
+			
+			System.out.println();
+			System.out.println("Clientes disponibles:");
+			listarClientes();
+			System.out.println();
+			
 			System.out.print("Ingrese id del cliente para eliminar el pedido de su lista: ");
 			int idCliente = sc.nextInt();
 			Cliente cliente = negocio.RetornoCliente(idCliente);
+			
+			System.out.println();
+			System.out.println("Pedidos realizados:");
+			cliente.ListarPedidos();
+			System.out.println();
 			
 			System.out.print("Ingrese id del pedido para eliminarlo: ");
 			int idPedido = sc.nextInt();
@@ -711,11 +737,19 @@ public class Main {
 			cliente.EliminarPedido(pedido);
 		} catch (ObjetoInexistenteExcepcion e) {
 			System.err.println(e.getMessage());
+		} catch (ListaVaciaExcepcion e) {
+			System.err.println(e.getMessage());
 		}
 	}	
 	
 	public static void listarPedidos() {
 		try {
+			negocio.ObtenerClientes();
+			System.out.println();
+			System.out.println("Clientes disponibles:");
+			listarClientes();
+			System.out.println();
+			
 			System.out.print("Ingresar el id del cliente para listar sus pedidos: ");
 			int idCliente = sc.nextInt();
 			Cliente cliente = negocio.RetornoCliente(idCliente);
@@ -731,10 +765,13 @@ public class Main {
 	public static void realizarVenta() {
 		try {
 			negocio.ObtenerAutopartes();
+			negocio.ObtenerClientes();
 			boolean valido = false;
 			
-			System.out.println("La lista de clientes disponibles es: ");
-			negocio.ListarClientes();
+			System.out.println();
+			System.out.println("Clientes disponibles:");
+			listarClientes();
+			System.out.println();
 			
 			System.out.print("Ingrese id del cliente para cargarle su venta: ");
 			int idcliente = sc.nextInt();
@@ -821,6 +858,7 @@ public class Main {
 			venta.DisminuirStock();
 			System.out.println("el monto total de la venta sera: " + venta.CalcularTotal());
 			cliente.CargarVenta(venta);
+			negocio.CargarVenta(venta);
 		} catch (ObjetoExistenteExcepcion e) {
 			System.err.println(e.getMessage());
 		} catch (MetodoNoReconocidoExcepcion e) {
@@ -836,27 +874,36 @@ public class Main {
 	
 	public static void convertirPedido() {
 		try {
-			System.out.println("La lista de clientes disponibles es: ");
-			negocio.ListarClientes();
+			negocio.ObtenerClientes();
+			System.out.println();
+			System.out.println("Clientes disponibles:");
+			listarClientes();
+			System.out.println();
 			
 			System.out.print("Ingrese id del cliente para cargarle su venta: ");
 			int idcliente = sc.nextInt();
 			Cliente cliente = negocio.RetornoCliente(idcliente);
 			
+			System.out.println();
 			System.out.println("La lista de pedidos disponibles para pasar a ventas es: ");
 			cliente.ListarPedidos();
+			System.out.println();
 			
 			System.out.print("Ingrese id del pedido que pasara a venta: ");
 			int id = sc.nextInt();
 			
 			Pedido pedido = cliente.RetornoPedido(id);
+			
+			System.out.print("Ingrese id de la venta: ");
+			int idVenta = sc.nextInt();
+			negocio.CorroborarExistenciaVenta(idVenta);
+			pedido.setId(idVenta);
+			
 			Venta venta = pedido.convertirAVenta();
-			cliente.Sacarlistapedido(pedido);
-			
-			
-			
+			cliente.SacarListaPedido(pedido);
 			
 			cliente.CargarVenta(venta);
+			negocio.CargarVenta(venta);
 			
 			System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
 			venta.CalcularMontoTotal();
@@ -871,9 +918,34 @@ public class Main {
 			System.err.println(e.getMessage());
 		} catch (AccionImposibleExcepcion e) {
 			System.err.println(e.getMessage());
+		} catch (IdExistenteExcepcion e) {
+			System.err.println(e.getMessage());
 		}
 	}
-	 
+	
+	public static void listarVentasCliente() {
+		try {
+			negocio.ObtenerClientes();
+			
+			System.out.println();
+			System.out.println("Clientes disponibles:");
+			listarClientes();
+			System.out.println();
+			
+			System.out.print("Ingrese id del cliente para mostrar ventas realizadas: ");
+			int idcliente = sc.nextInt();
+			Cliente cliente = negocio.RetornoCliente(idcliente);
+			
+			cliente.ListarVentas();			
+		} catch (ObjetoInexistenteExcepcion e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	public static void listarVentasNegocio() {
+		negocio.ListarVentas();
+	}
+	
 	public static void validarLongtud(String cadena) {
 		if (cadena.length() < 1 || cadena.length() > 50) {
 			throw new LongitudInvalidaExcepcion("Error: Debe contener entre 1 y 50 caracteres");
@@ -982,7 +1054,13 @@ public class Main {
 
 	public static void validarOpcion6(String letra) {
 		if (!letra.equals("a") && !letra.equals("b") && !letra.equals("c") && !letra.equals("d")) {
-			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b', 'c', 'd'.");
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b', 'c' o 'd'.");
+		}
+	}
+	
+	public static void validarOpcion7(String letra) {
+		if (!letra.equals("a") && !letra.equals("b") && !letra.equals("c") && !letra.equals("d") && !letra.equals("e")) {
+			throw new OpcionInvalidaExcepcion("Error: Opcion no valida. Debe seleccionar 'a', 'b', 'c', 'd' o 'e'.");
 		}
 	}
 	
