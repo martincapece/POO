@@ -148,6 +148,7 @@ public class Main {
 					}while(!opcionPedido.equals("d"));						
 					break;
 				case 4:
+					try {
 						do {
 							System.out.println();
 							System.out.println("a- Venta directa");
@@ -173,10 +174,10 @@ public class Main {
 							}else if(tipoVenta.equals("d")) {
 								listarVentasNegocio();
 							}
-						}while(!tipoVenta.equals("e"));
+						} while(!tipoVenta.equals("e"));
 					} catch (ListaVaciaExcepcion e) {
 						System.err.println(e.getMessage());
-					}
+					}	
 					break;
 				case 5:
 					usuario = null;
