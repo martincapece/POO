@@ -97,24 +97,14 @@ public class Cliente {
         }
     }
 	
-	public void SacarListaPedido(Pedido pedidox) {
-	    boolean existe = this.ComprobarPedido(this.getId());
-	    
-	    if (!existe) {
-	        throw new ObjetoInexistenteExcepcion("Error: La autoparte con ID: " + id + " no existe.");
-	    } else {
-	        Pedido elegido = null;
-	        for (Pedido pedido : pedidos) {
-	            if (pedido.getId() == id) {
-	                elegido = pedido;
-	                break;
-	            }
-	        }
-	        if (elegido != null) {
-	            pedidos.remove(elegido);
-	            System.out.println("¡La autoparte fue eliminada con éxito!");
-	        }
+	public void SacarListaPedido(Pedido pedido) {
+
+	    if (!pedidos.contains(pedido)) {
+	        throw new ObjetoInexistenteExcepcion("Error: El pedido con ID " + pedido.getId() + " no existe para este cliente.");
 	    }
+	    
+	    pedidos.remove(pedido);
+	    System.out.println("¡El pedido fue eliminado con éxito!");
         
     }
 	

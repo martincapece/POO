@@ -14,7 +14,7 @@ public class VentaConCredito extends Venta {
 
 	public void setCuotas(int cuotas) {
 		this.cuotas = cuotas;
-	}
+	} 
 
 	public double CalcularTotal() {
 		 if (this.cuotas == 2) {

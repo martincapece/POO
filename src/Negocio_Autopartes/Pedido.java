@@ -118,6 +118,7 @@ public class Pedido {
 				try {
 					System.out.print("Ingrese cuotas a pagar: ");
 					cuotas = sc.nextInt();
+					 sc.nextLine();
 					this.validarCuotas(cuotas);
 					valido2 = true;
 				} catch (CuotasInvalidasExcepecion e) {

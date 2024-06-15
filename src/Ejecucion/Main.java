@@ -902,14 +902,17 @@ public class Main {
 			
 			Venta venta = pedido.convertirAVenta();
 			cliente.SacarListaPedido(pedido);
-			
+		
 			cliente.CargarVenta(venta);
 			negocio.CargarVenta(venta);
+			
 			
 			System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
 			venta.CalcularMontoTotal();
 			System.out.println("el monto total es de: " + venta.CalcularTotal());	
-			venta.setMontoTotal(venta.CalcularTotal());
+			
+			
+			
 		} catch (ObjetoExistenteExcepcion e) {
 			System.err.println(e.getMessage());
 		} catch (MetodoNoReconocidoExcepcion e) {
