@@ -141,7 +141,7 @@ public class Negocio {
                 System.out.println("ID: " + cliente.getId() + ", Nombre: " + cliente.getNombre() + ", e-mail: " + cliente.getEmail());
             }
         }
-    }
+    } 
 	
 	public void ListarVentas() {
         if (ventas.isEmpty()) {

@@ -908,7 +908,8 @@ public class Main {
 			
 			System.out.println("El pedido se ha convertido en una venta y se agregó a la lista del cliente.");
 			venta.CalcularMontoTotal();
-			System.out.println("el monto total es de: " + venta.CalcularTotal());			
+			System.out.println("el monto total es de: " + venta.CalcularTotal());	
+			venta.setMontoTotal(venta.CalcularTotal());
 		} catch (ObjetoExistenteExcepcion e) {
 			System.err.println(e.getMessage());
 		} catch (MetodoNoReconocidoExcepcion e) {
